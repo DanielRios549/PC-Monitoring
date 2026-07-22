@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Hardware Monitor</title>
+        <link rel="stylesheet" href="/style.css"/>
+        <script defer async src="/script.js"></script>
+    </head>
+    <body>
+        <h1>SYSTEM MONITOR</h1>
+        <div class="grid">
+            <!-- CPU Section -->
+            <div class="card">
+                <h2>CPU Usage</h2>
+                <div id="cpu-container" class="cpu-grid">Loading cores...</div>
+            </div>
+            <!-- RAM Section -->
+            <div class="card">
+                <h2>Memory (RAM)</h2>
+                <p id="ram-text">0 / 0 GB Used</p>
+                <div class="progress-bar"><div id="ram-fill" class="progress-fill"></div></div>
+                <small id="ram-percent" style="color:var(--accent)">0%</small>
+            </div>
+            <!-- GPU Section -->
+            <div class="card">
+                <h2>GPU & VRAM</h2>
+                <div id="gpu-container">Loading GPUs...</div>
+            </div>
+            <!-- Disk Section -->
+            <div class="card">
+                <h2>Storage (Disks)</h2>
+                <div id="disk-list"></div>
+            </div>
+        </div>
+    </body>
+</html>
