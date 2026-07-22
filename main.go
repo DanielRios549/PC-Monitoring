@@ -8,6 +8,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"pc-monitoring/models"
 	"pc-monitoring/helpers"
+	"pc-monitoring/monitors"
 )
 
 func main() {
@@ -31,7 +32,7 @@ func main() {
 	})
 
 	router.Get("/stats", func(w http.ResponseWriter, r *http.Request) {
-		monitorData := helpers.GetStats()
+		monitorData := monitors.GetStats()
 	
 		w.Header().Set("Content-Type", "application/json")
 		err := json.NewEncoder(w).Encode(monitorData)

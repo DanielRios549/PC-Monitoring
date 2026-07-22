@@ -1,15 +1,14 @@
-package helpers
+package monitors
 
 import (
 	"pc-monitoring/models"
-	"pc-monitoring/monitors"
 )
 
 func GetStats() models.Response {
-	cpu_list   := monitors.CPU()
-	ram_usage  := monitors.MEM()
-	disks_list := monitors.Disks()
-	gpu_list   := monitors.GPU()
+	cpu_list   := CPU()
+	ram_usage  := MEM()
+	disks_list := Disks()
+	gpu_list   := GPU()
 
 	return models.Response{
 		CPU:  cpu_list,
