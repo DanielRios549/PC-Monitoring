@@ -12,9 +12,13 @@ import (
 
 func main() {
 	router := chi.NewRouter()
+	server := &http.Server{
+		Addr: ":9003",
+		Handler: router,
+	}
 
 	fileServer := http.FileServer(http.Dir("./static"))
-	router.Handle("/*", http.StripPrefix("/", fileServer))
+	router.Handle("/*", fileServer)
 
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		pageData := models.PageData{
@@ -34,13 +38,15 @@ func main() {
 
 		if err != nil {
 			http.Error(w, "Error to Show Stats Data", http.StatusInternalServerError)
+			return
 		}
 	})
 
-	fmt.Println("Server starting on :9003...")
-	err := http.ListenAndServe(":9003", router)
+	fmt.Println("Monitoring server starting on :9003...")
+	err := server.ListenAndServe()
 
 	if err != nil {
 		fmt.Printf("Error to Start the Application: %v", err)
+		return
 	}
 }
