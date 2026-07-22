@@ -9,9 +9,8 @@ async function updateStats() {
     
         data.cpus.forEach((cpu) => {
             const cpuDiv = document.createElement('div')
-    
+
             cpuDiv.className = 'cpu-item'
-    
             cpuDiv.innerHTML = `C${Number(cpu.core) + 1}<br>${cpu.usage}%`
             cpuDiv.style.backgroundColor = cpu.usage > 80 ? '#451a1a' : '#334155'
 
@@ -19,14 +18,23 @@ async function updateStats() {
         })
 
         // Update RAM Elements
-        const ramFill = document.getElementById('ram-fill')
-        const ramText = document.getElementById('ram-text')
-        const ramPercent = document.getElementById('ram-percent')
+        const ramContainer = document.getElementById('ram-container')
+        ramContainer.innerHTML = ''
     
-        ramFill.style.width = data.ram.percent + '%'
-        ramText.innerText = `${data.ram.used_gb} / ${data.ram.total_gb} GB`
-        ramPercent.innerText = data.ram.percent + '%'
+        data.ram.forEach((ram) => {
+            const ramDiv = document.createElement('div')
+            ramDiv.className = 'memory-item'
 
+            ramDiv.innerHTML = /* html */`
+                <p id="ram-text">${ram.used_gb} / ${ram.total_gb} GB</p>
+                <div class="progress-bar">
+                    <div id="ram-fill" class="progress-fill" style="width: ${ram.percent}%"></div>
+                </div>
+                <small id="ram-percent" style="color:var(--accent)">${ram.percent}%</small>
+            `
+            ramContainer.appendChild(ramDiv)
+        })
+    
         // Update GPU Elements
         const gpuContainer = document.getElementById('gpu-container')
         gpuContainer.innerHTML = ''
@@ -52,6 +60,7 @@ async function updateStats() {
         // Update Disk Elements
         const diskList = document.getElementById('disk-list')
         diskList.innerHTML = ''
+
         data.disks.forEach((disk) => {
             const disksDiv = document.createElement('div')
             disksDiv.style.marginBottom = '10px'
