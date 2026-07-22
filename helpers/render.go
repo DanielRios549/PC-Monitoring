@@ -20,5 +20,6 @@ func RenderTemplate(w http.ResponseWriter, file string, data models.PageData) {
 
 	if err != nil {
 		http.Error(w, "Template rendering error", http.StatusInternalServerError)
+		return
 	}
 }

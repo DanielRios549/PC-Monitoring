@@ -1,5 +1,11 @@
 package models
 
+type GPUInfo struct {
+	Name        string
+	Vendor      string // "Nvidia" "AMD" or "Intel"
+	Description string
+}
+
 type GPUData struct {
 	Name        string  `json:"name"`
 	Load        float64 `json:"load"`      // This is the 'usage' in your dashboard loop
