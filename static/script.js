@@ -66,10 +66,11 @@ async function updateStats() {
             disksDiv.style.marginBottom = '10px'
             disksDiv.innerHTML = /* html */`
                 <strong style="font-size: 0.9rem">${disk.mount}</strong> (${disk.used}GB / ${disk.total}GB)<br>
-                <div class="progress-bar" style="height:8px width: ${disk.percent}%"></div>
-                <small>${disk.percent}% - ${disk.device}</small>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${disk.percent}%"></div>
+                </div>
+                <small style="color:var(--accent)">${disk.percent}% - ${disk.device}</small>
             `
-
             diskList.appendChild(disksDiv)
         })
 
@@ -80,4 +81,4 @@ async function updateStats() {
 }
 
 updateStats()
-setInterval(updateStats, 1000)
+// setInterval(updateStats, 1000)
