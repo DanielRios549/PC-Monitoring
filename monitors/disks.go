@@ -3,6 +3,7 @@ package monitors
 import (
 	"github.com/shirou/gopsutil/v3/disk"
 
+	"pc-monitoring/helpers"
 	"pc-monitoring/models"
 )
 
@@ -16,9 +17,9 @@ func Disks() []*models.DiskData {
 		disks_list = append(disks_list, &models.DiskData{
 			Device:  p.Device,
 			Mount:   p.Mountpoint,
-			Total:   float64(disk.Total) / (1024 * 1024 * 1024),
-			Used:    float64(disk.Used) / (1024 * 1024 * 1024),
-			Percent: float64(disk.UsedPercent),
+			Total:   helpers.RoundTo(float64(disk.Total) / (1024 * 1024 * 1024), 2),
+			Used:    helpers.RoundTo(float64(disk.Used) / (1024 * 1024 * 1024), 2),
+			Percent: helpers.RoundTo(float64(disk.UsedPercent), 2),
 		})
 	}
 
