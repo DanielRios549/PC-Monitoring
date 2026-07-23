@@ -1,9 +1,11 @@
 package modules
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"pc-monitoring/helpers"
 	"pc-monitoring/models"
@@ -20,16 +22,17 @@ type Server struct {
 func NewServer() *Server {
 	router := chi.NewRouter()
 
-	return &Server{
-		server: &http.Server{
-			Addr: ":9003",
-			Handler: router,
-		},
+	instance := &Server{
+		server: nil,
 		router: router,
 	}
+
+	instance.Routes()
+
+	return instance
 }
 
-func (s *Server) Router() {
+func (s *Server) Routes() {
 	fileServer := http.FileServer(http.Dir("./static"))
 	s.router.Handle("/*", fileServer)
 
@@ -58,9 +61,17 @@ func (s *Server) Router() {
 
 func (s *Server) Start() {
 	fmt.Println("Starting Monitoring server at :9003...")
-	s.Router()
 
-	// done := helpers.InitWatch()
+	if s.server != nil {
+		fmt.Println("Server already running")
+		return
+	}
+
+	s.server = &http.Server{
+		Addr: ":9003",
+		Handler: s.router,
+	}
+
 	err := s.server.ListenAndServe()
 
 	if err != nil && err != http.ErrServerClosed {
@@ -69,17 +80,28 @@ func (s *Server) Start() {
 	}
 
 	helpers.ServerStatus <- true
-	// done <- true
 }
 
 func (s *Server) Stop() {
 	fmt.Println("Stopping Monitoring server...")
-	err := s.server.Close()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	err := s.server.Shutdown(ctx)
 	
 	if err != nil {
-		fmt.Printf("Error to Stop Web Server: %v\n", err)
+		// Close Server if Gracefully Shutdown fails
+		err = s.server.Close()
+
+		if err != nil {
+			fmt.Printf("Error to Stop Web Server: %v\n", err)
+			return
+		}
+
 		return
 	}
 
+	s.server = nil
 	helpers.ServerStatus <- false
 }

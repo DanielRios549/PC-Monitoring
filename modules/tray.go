@@ -60,11 +60,14 @@ func (t *Tray) Show() {
 func(t *Tray) setMenu() *systray.Menu {
 	menu := systray.NewMenu()
 
-    menu.Add(t.action, func() {
+	// TODO: t.action not changing Tray Menu Label
+    menu.Add("Start/Stop", func() {
 		switch t.action {
 			case "Stop":
+				t.action = "Start"
 				t.server.Stop()
 			case "Start":
+				t.action = "Stop"
 				t.server.Start()
 		}
 	})
