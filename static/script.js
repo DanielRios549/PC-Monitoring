@@ -80,5 +80,5 @@ async function updateStats() {
     }
 }
 
-updateStats()
-// setInterval(updateStats, 1000)
+// updateStats()
+setInterval(updateStats, 1000)
