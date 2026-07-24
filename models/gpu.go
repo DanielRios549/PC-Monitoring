@@ -2,7 +2,11 @@ package models
 
 type GPUMonitor interface{
 	Stats() ([]*GPUData, error)
+	CountDevices() int8
 	Close()
+	// getAdapter()
+	// getEngines()
+	// getMemories()
 }
 
 type GPUInfo struct {

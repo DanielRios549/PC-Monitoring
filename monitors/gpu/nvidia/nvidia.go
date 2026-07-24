@@ -1,6 +1,7 @@
 package nvidia
 
 import (
+	"errors"
 	"fmt"
 	"pc-monitoring/helpers"
 	"pc-monitoring/models"
@@ -8,14 +9,27 @@ import (
 	"github.com/NVIDIA/go-nvml/pkg/nvml"
 )
 
-type Monitor struct{}
+type Monitor struct{
+	count int8
+}
 
 func New() (*Monitor, error) {
-    if ret := nvml.Init(); ret != nvml.SUCCESS {
-        return nil, ret
+	instance := &Monitor{
+		count: 0,
+	}
+
+	init := nvml.Init()
+
+    if init != nvml.SUCCESS {
+		err := fmt.Sprintf("error to Init NVML -> Error Code: %v", init)
+        return instance, errors.New(err)
     }
 
-    return &Monitor{}, nil
+    return instance, nil
+}
+
+func (m *Monitor) CountDevices() int8 {
+	return m.count
 }
 
 func (m *Monitor) Close() {

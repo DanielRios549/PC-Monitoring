@@ -12,44 +12,72 @@ import (
 func GPU() []*models.GPUData {
 	gpu_list := []*models.GPUData{}
 
-	data, err := detectVendor()
+	monitors, _, err := detectVendor()
+	// println("1: ", len(monitors))
+	// test, _ := monitors[0].Stats()
+	// println("2: ", len(test))
 
 	if err != nil {
         return gpu_list
     }
 
-	stats, err := data.Stats()
+	for _, data := range monitors {
+		stats, err := data.Stats()
 
-	if err != nil {
-        return gpu_list
-    }
+		if err != nil {
+			continue
+		}
 
-	for _, stat := range stats {
-		gpu_list = append(gpu_list, &models.GPUData{
-			Name:        stat.Name,
-			Type:        stat.Type,
-			Load:        stat.Load,
-			Mem_total:   stat.Mem_total,
-			Mem_used:    stat.Mem_used,
-			Mem_percent: stat.Mem_percent,
-		})
+		for _, stat := range stats {
+			gpu_list = append(gpu_list, &models.GPUData{
+				Name:        stat.Name,
+				Type:        stat.Type,
+				Load:        stat.Load,
+				Mem_total:   stat.Mem_total,
+				Mem_used:    stat.Mem_used,
+				Mem_percent: stat.Mem_percent,
+			})
+		}
 	}
 
 	return gpu_list
 }
 
-func detectVendor() (models.GPUMonitor, error)  {
-    if monitor, err := nvidia.New(); err == nil {
-        return monitor, nil
-    }
+func detectVendor() ([]models.GPUMonitor, int8, error)  {
+	var monitors []models.GPUMonitor
+	var monitor  models.GPUMonitor
+	var count    int8
+	var err      error
 
-	if monitor, err := amd.New(); err == nil {
-        return monitor, nil
-    }
+	// Nvidia
+	monitor, err = nvidia.New()
+	count += monitor.CountDevices()
+	
+	if err == nil && count >= 1 {
+		monitors = append(monitors, monitor)
+	}
 
-    if monitor, err := intel.New(); err == nil {
-        return monitor, nil
-    }
+	// AMD
+	monitor, err = amd.New()
+	count += monitor.CountDevices()
+	
+	if err == nil && count >= 1 {
+		monitors = append(monitors, monitor)
+	}
 
-    return nil, errors.New("no supported GPU found")
+	// Intel
+	monitor, err = intel.New()
+	count += monitor.CountDevices()
+	
+	if err == nil && count >= 1 {
+		monitors = append(monitors, monitor)
+	}
+
+	// Return the monitors list if exists
+	if len(monitors) < 1 {
+		return nil, 0, errors.New("no supported GPU found")
+	}
+
+	return monitors, count, nil
+
 }
