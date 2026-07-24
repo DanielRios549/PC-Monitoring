@@ -9,7 +9,7 @@ import (
 
 // TODO: Add Swap
 
-// RAM usage
+// RAM and Swap usage
 func MEM() []*models.RAMData {
 	var ram []*models.RAMData
 

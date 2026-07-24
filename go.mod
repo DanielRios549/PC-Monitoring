@@ -3,6 +3,7 @@ module pc-monitoring
 go 1.26.3
 
 require (
+	github.com/NVIDIA/go-nvml v0.13.3-1 // indirect
 	github.com/go-chi/chi/v5 v5.3.1 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/go-webgpu/goffi v0.6.0 // indirect

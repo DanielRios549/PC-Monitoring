@@ -7,6 +7,8 @@ import (
 	"pc-monitoring/models"
 )
 
+// TODO: Implement IO usage
+// Disks Space
 func Disks() []*models.DiskData {
 	var disks_list []*models.DiskData
 	partitions, _ := disk.Partitions(false)

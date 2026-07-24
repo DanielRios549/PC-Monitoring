@@ -1,11 +1,11 @@
 run:
-	go run main.go
+	CGO_ENABLED=1 go run main.go
 
 build:
-	go build -o build/monitor
+	CGO_ENABLED=1 go build -o build/monitor
 
 build-linux:
-	GOOS=linux GOARCH=amd64 go build -o build/monitor
+	CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -o build/monitor
 
 build-windows:
-	GOOS=windows GOARCH=amd64 go build -o build/monitor.exe
+	CGO_ENABLED=1 GOOS=windows GOARCH=amd64 go build -o build/monitor.exe
