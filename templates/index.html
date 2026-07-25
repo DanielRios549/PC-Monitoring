@@ -9,9 +9,14 @@
 
         <link rel="icon" href="/icon.png">
         <link rel="stylesheet" href="/style.css"/>
+        <script defer async src="/script.js"></script>
+
+        <!-- V4 Beta 6 -->
         <script defer async src="/htmx.js"></script>
+        <!-- V3.15.12 -->
+        <script defer async src="/alpine.js"></script>
     </head>
-    <body>
+    <body x-data :class="!$store.darkMode.on && 'light'">
         <h1>PC MONITORING</h1>
         <main class="grid">
             <!-- CPU Section -->

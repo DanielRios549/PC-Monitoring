@@ -1,7 +1,14 @@
-:root {
+body {
     --bg: #0f172a;
     --card-bg: #1e293b;
     --text: #f8fafc;
+    --accent: #38bdf8;
+    --danger: #ef4444;
+}
+body.light {
+    --bg: #f8fafc;
+    --card-bg: #d3d3d3;
+    --text: #0f172a;
     --accent: #38bdf8;
     --danger: #ef4444;
 }
@@ -23,10 +30,17 @@ h2 {
     border-bottom: 1px solid #334155;
     padding-bottom: 10px;
 }
+h2.card-name {
+    color: var(--text);
+}
 .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
+}
+.grid > section > h2 {
+    display: flex;
+    justify-content: space-between;
 }
 .card {
     background: var(--card-bg);

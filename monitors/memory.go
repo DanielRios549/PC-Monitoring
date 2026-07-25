@@ -7,10 +7,8 @@ import (
 	"pc-monitoring/helpers"
 )
 
-// TODO: Add Swap
-
 // RAM and Swap usage
-func MEM() []*models.RAMData {
+func MEMData() []*models.RAMData {
 	var ram []*models.RAMData
 
 	system, _ := mem.VirtualMemory()

@@ -1,7 +1,10 @@
 {{range $cpu := .}}
-    <div class="cpu-item" style="--color: {{$cpu.Color}};">
+    <div
+        class="cpu-item"
+        x-data="{ usage: {{$cpu.Usage}} }"
+        :style="{'--color': usage > 10 && '#451a1a'}">
         <p>
-            C{{$cpu.Core}}<br>
+            <span>C{{$cpu.Core}}</span>
             <span>{{$cpu.Usage}}%</span>
         </p>
     </div>
@@ -20,8 +23,13 @@
             border-radius: 4px;
             background-color: var(--color, #334155);
 
-            p span {
-                font-size: 1rem;
+            p {
+                display: flex;
+                flex-direction: column;
+
+                span {
+                    font-size: 1rem;
+                }
             }
         }
     }
