@@ -4,8 +4,8 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <title>{{.Title}}</title>
-        <meta name="description" content="{{.Message}}">
+        <title>{{.Header.Title}}</title>
+        <meta name="description" content="{{.Header.Description}}">
 
         <link rel="icon" href="/icon.png">
         <link rel="stylesheet" href="/style.css"/>
@@ -15,22 +15,22 @@
         <h1>PC MONITORING</h1>
         <main class="grid">
             <!-- CPU Section -->
-            <section class="card" hx-get="/cpu" hx-target="#cpu-container" hx-trigger="every 1s">
-                <h2>CPU Usage</h2>
+            <section class="card" hx-post="/cpu" hx-target="#cpu-container" hx-trigger="every 1s">
+                <h2>CPU Usage <span class="card-name">{{.Info.CPU.Name}}</span></h2>
                 <article id="cpu-container">Loading cores...</article>
             </section>
             <!-- RAM Section -->
-            <section class="card" hx-get="/memory" hx-target="#ram-container" hx-trigger="every 2s">
+            <section class="card" hx-post="/memory" hx-target="#ram-container" hx-trigger="every 2s">
                 <h2>Memory (RAM)</h2>
                 <article id="ram-container">Loading Memory...</article>
             </section>
             <!-- GPU Section -->
-            <section class="card" hx-get="/gpu" hx-target="#gpu-container" hx-trigger="every 1s">
+            <section class="card" hx-post="/gpu" hx-target="#gpu-container" hx-trigger="every 1s">
                 <h2>GPU & VRAM</h2>
                 <article id="gpu-container">Loading GPUs...</article>
             </section>
             <!-- Disk Section -->
-            <section class="card" hx-get="/disk" hx-target="#disk-container" hx-trigger="every 10s">
+            <section class="card" hx-post="/disk" hx-target="#disk-container" hx-trigger="load">
                 <h2>Storage (Disks)</h2>
                 <article id="disk-container"></article>
             </section>

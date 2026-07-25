@@ -1,6 +1,6 @@
 package models
 
 type PageData struct {
-	Title   string
-	Message string
+	Title       string
+	Description string
 }

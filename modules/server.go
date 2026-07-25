@@ -37,37 +37,48 @@ func (s *Server) Routes() {
 	s.router.Handle("/*", fileServer)
 
 	s.router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		pageData := models.PageData{
-			Title:   "PC Monitoring",
-			Message: "Real-time PC monitoring tool",
+		cpu := monitors.CPUInfo()
+
+		header := models.PageData{
+			Title:       "PC Monitoring",
+			Description: "Real-time PC monitoring tool",
+		}
+
+		info := &models.Response{
+			CPU: cpu,
+		}
+
+		pageInfo := map[string]any{
+			"Header": header,
+			"Info": info,
 		}
 
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		helpers.RenderTemplate(w, "index.html", pageData)
+		helpers.RenderTemplate(w, "index.html", pageInfo)
 	})
 
-	s.router.Get("/cpu", func(w http.ResponseWriter, r *http.Request) {
-		monitorData := monitors.CPU()
+	s.router.Post("/cpu", func(w http.ResponseWriter, r *http.Request) {
+		monitorData := monitors.CPUData()
 	
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		helpers.RenderTemplate(w, "cpu.html", monitorData)
 	})
 
-	s.router.Get("/memory", func(w http.ResponseWriter, r *http.Request) {
-		monitorData := monitors.MEM()
+	s.router.Post("/memory", func(w http.ResponseWriter, r *http.Request) {
+		monitorData := monitors.MEMData()
 	
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		helpers.RenderTemplate(w, "memory.html", monitorData)
 	})
 
-	s.router.Get("/disk", func(w http.ResponseWriter, r *http.Request) {
+	s.router.Post("/disk", func(w http.ResponseWriter, r *http.Request) {
 		monitorData := monitors.Disks()
 	
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		helpers.RenderTemplate(w, "disk.html", monitorData)
 	})
 
-	s.router.Get("/gpu", func(w http.ResponseWriter, r *http.Request) {
+	s.router.Post("/gpu", func(w http.ResponseWriter, r *http.Request) {
 		monitorData := gpu.GPU()
 	
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
