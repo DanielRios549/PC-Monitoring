@@ -72,6 +72,14 @@ func(t *Tray) setMenu() *systray.Menu {
 		}
 	})
 
+	menu.Add("Open", func () {
+		err := helpers.OpenBrowser("http://localhost:9003")
+
+		if err != nil {
+			fmt.Println("Error to open Web Browser: ", err)
+		}
+	})
+
     menu.AddSeparator()
     menu.Add("Quit", func() {
 		t.tray.Remove()
