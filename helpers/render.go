@@ -4,22 +4,32 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
 )
 
-func RenderTemplate(w http.ResponseWriter, file string, data any) {
-	tmplPath := filepath.Join("templates", file)
-	tmpl, err := template.ParseFiles(tmplPath)
-	
+var templates = make(map[string]*template.Template)
+
+func InitTemplates() {
+	entries, err := os.ReadDir("templates")
+
 	if err != nil {
-		message := fmt.Sprintf("Template parsing error: %v", err.Error())
-		http.Error(w, message, http.StatusInternalServerError)
-		return
+		fmt.Printf("Template parsing error: %v", err.Error())
 	}
 
-	err = tmpl.Execute(w, data)
+	for _, entry := range entries {
+		file := entry.Name()
+
+		path := filepath.Join("templates", file)
+		templates[file] = template.Must(template.ParseFiles(path))
+	}
+}
+
+func RenderTemplate(w http.ResponseWriter, file string, data any) {
+	tmpl := templates[file]
+	err := tmpl.Execute(w, data)
 
 	if err != nil {
 		message := fmt.Sprintf("Template rendering error: %v", err.Error())

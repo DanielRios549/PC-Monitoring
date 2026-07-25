@@ -27,6 +27,7 @@ func NewServer() *Server {
 		router: router,
 	}
 
+	helpers.InitTemplates()
 	instance.Routes()
 
 	return instance
