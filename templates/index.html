@@ -20,7 +20,7 @@
                 <article id="cpu-container">Loading cores...</article>
             </section>
             <!-- RAM Section -->
-            <section class="card" hx-get="/memory" hx-target="#ram-container" hx-trigger="every 1s">
+            <section class="card" hx-get="/memory" hx-target="#ram-container" hx-trigger="every 2s">
                 <h2>Memory (RAM)</h2>
                 <article id="ram-container">Loading Memory...</article>
             </section>
@@ -30,7 +30,7 @@
                 <article id="gpu-container">Loading GPUs...</article>
             </section>
             <!-- Disk Section -->
-            <section class="card" hx-get="/disk" hx-target="#disk-container" hx-trigger="every 1s">
+            <section class="card" hx-get="/disk" hx-target="#disk-container" hx-trigger="every 10s">
                 <h2>Storage (Disks)</h2>
                 <article id="disk-container"></article>
             </section>

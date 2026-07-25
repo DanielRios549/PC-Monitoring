@@ -16,12 +16,12 @@ func CPU() []*models.CPUData {
 		usage := helpers.RoundTo(usage, 2)
 		color := "#334155"
 
-		if usage > 10 {
+		if usage > 90 {
 			color = "#451a1a"
 		}
 	
 		cpu_list = append(cpu_list, &models.CPUData{
-			Core:  core,
+			Core:  core + 1,
 			Usage: usage,
 			Color: color,
 		})
