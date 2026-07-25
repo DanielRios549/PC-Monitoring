@@ -1,0 +1,24 @@
+{{range $gpu := .}}
+    <div class="gpu-card">
+        <p class="gpu-name">{{$gpu.Name}}</p>
+        <div class="progress-bar">
+            <div class="progress-fill" style="--width: {{$gpu.Mem_percent}}%"></div>
+        </div>
+        <p>Load: {{$gpu.Load}}% | VRAM: ({{$gpu.Mem_used}} / 1024)MB / ({{$gpu.Mem_total}} / 1024)MB</p>
+    </div>
+{{end}}
+
+
+<style>
+    .gpu-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 15px;
+        width: 100%;
+
+        .gpu-name {
+            text-align: left;
+        }
+    }
+</style>

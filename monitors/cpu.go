@@ -13,9 +13,17 @@ func CPU() []*models.CPUData {
 	var cpu_list []*models.CPUData
 
 	for core, usage := range cpu_raw {
+		usage := helpers.RoundTo(usage, 2)
+		color := "#334155"
+
+		if usage > 10 {
+			color = "#451a1a"
+		}
+	
 		cpu_list = append(cpu_list, &models.CPUData{
 			Core:  core,
-			Usage: helpers.RoundTo(usage, 2),
+			Usage: usage,
+			Color: color,
 		})
 	}
 

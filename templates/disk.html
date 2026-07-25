@@ -1,0 +1,25 @@
+{{range $disk := .}}
+    <div class="disk-item">
+        <strong>{{$disk.Mount}}</strong> ({{$disk.Used}}GB / {{$disk.Total}}GB)<br>
+        <div class="progress-bar">
+            <div class="progress-fill" style="--width: {{$disk.Percent}}%"></div>
+        </div>
+        <small>{{$disk.Percent}}% - {{$disk.Device}}</small>
+    </div>
+{{end}}
+
+<style>
+    .disk-item {
+        margin-bottom: 10px;
+
+        strong {
+            font-size: 0.9rem
+        }
+        .progress-bar .progress-fill {
+            width: var(--width, 100%);
+        }
+        small {
+            color:var(--accent)
+        }
+    }
+</style>

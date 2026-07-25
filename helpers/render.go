@@ -4,10 +4,9 @@ import (
 	"net/http"
 	"html/template"
 	"path/filepath"
-	"pc-monitoring/models"
 )
 
-func RenderTemplate(w http.ResponseWriter, file string, data models.PageData) {
+func RenderTemplate(w http.ResponseWriter, file string, data interface{}) {
 	tmplPath := filepath.Join("templates", file)
 	tmpl, err := template.ParseFiles(tmplPath)
 
@@ -16,7 +15,7 @@ func RenderTemplate(w http.ResponseWriter, file string, data models.PageData) {
 		return
 	}
 
-	err = tmpl.Execute(w, file)
+	err = tmpl.Execute(w, data)
 
 	if err != nil {
 		http.Error(w, "Template rendering error", http.StatusInternalServerError)

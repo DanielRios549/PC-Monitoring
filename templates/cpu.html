@@ -1,0 +1,28 @@
+{{range $cpu := .}}
+    <div class="cpu-item" style="--color: {{$cpu.Color}};">
+        <p>
+            C{{$cpu.Core}}<br>
+            <span>{{$cpu.Usage}}%</span>
+        </p>
+    </div>
+{{end}}
+
+<style>
+    #cpu-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+        gap: 5px;
+
+        .cpu-item {
+            text-align: center;
+            font-size: 0.7rem;
+            padding: 5px;
+            border-radius: 4px;
+            background-color: var(--color, #334155);
+
+            p span {
+                font-size: 1rem;
+            }
+        }
+    }
+</style>

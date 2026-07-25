@@ -1,0 +1,15 @@
+{{range $mem := .}}
+    <div class="memory-item">
+        <p id="ram-text">{{$mem.Used_gb}} / {{$mem.Total_gb}} GB</p>
+        <div class="progress-bar">
+            <div id="ram-fill" class="progress-fill" style="--percent: {{$mem.Percent}}%"></div>
+        </div>
+        <small id="ram-percent" style="color:var(--accent)">{{$mem.Percent}}%</small>
+    </div>
+{{end}}
+
+<style>
+    #ram-fill {
+        width: var(--percent, 100%);
+    }
+</style>

@@ -2,7 +2,6 @@ package modules
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
@@ -10,6 +9,7 @@ import (
 	"pc-monitoring/helpers"
 	"pc-monitoring/models"
 	"pc-monitoring/monitors"
+	"pc-monitoring/monitors/gpu"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -46,16 +46,32 @@ func (s *Server) Routes() {
 		helpers.RenderTemplate(w, "index.html", pageData)
 	})
 
-	s.router.Get("/stats", func(w http.ResponseWriter, r *http.Request) {
-		monitorData := monitors.GetStats()
+	s.router.Get("/cpu", func(w http.ResponseWriter, r *http.Request) {
+		monitorData := monitors.CPU()
 	
-		w.Header().Set("Content-Type", "application/json")
-		err := json.NewEncoder(w).Encode(monitorData)
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		helpers.RenderTemplate(w, "cpu.html", monitorData)
+	})
 
-		if err != nil {
-			http.Error(w, "Error to Show Stats Data", http.StatusInternalServerError)
-			return
-		}
+	s.router.Get("/memory", func(w http.ResponseWriter, r *http.Request) {
+		monitorData := monitors.MEM()
+	
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		helpers.RenderTemplate(w, "memory.html", monitorData)
+	})
+
+	s.router.Get("/disk", func(w http.ResponseWriter, r *http.Request) {
+		monitorData := monitors.Disks()
+	
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		helpers.RenderTemplate(w, "disk.html", monitorData)
+	})
+
+	s.router.Get("/gpu", func(w http.ResponseWriter, r *http.Request) {
+		monitorData := gpu.GPU()
+	
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		helpers.RenderTemplate(w, "gpu.html", monitorData)
 	})
 }
 

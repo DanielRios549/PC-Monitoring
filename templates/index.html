@@ -3,34 +3,37 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>PC Monitoring</title>
+
+        <title>{{.Title}}</title>
+        <meta name="description" content="{{.Message}}">
+
         <link rel="icon" href="/icon.png">
         <link rel="stylesheet" href="/style.css"/>
-        <script defer async src="/script.js"></script>
+        <script defer async src="/htmx.js"></script>
     </head>
     <body>
         <h1>PC MONITORING</h1>
-        <div class="grid">
+        <main class="grid">
             <!-- CPU Section -->
-            <div class="card">
+            <section class="card" hx-get="/cpu" hx-target="#cpu-container" hx-trigger="every 1s">
                 <h2>CPU Usage</h2>
-                <div id="cpu-container" class="cpu-grid">Loading cores...</div>
-            </div>
+                <article id="cpu-container">Loading cores...</article>
+            </section>
             <!-- RAM Section -->
-            <div class="card">
+            <section class="card" hx-get="/memory" hx-target="#ram-container" hx-trigger="every 1s">
                 <h2>Memory (RAM)</h2>
-                <div id="ram-container">Loading Memory...</div>
-            </div>
+                <article id="ram-container">Loading Memory...</article>
+            </section>
             <!-- GPU Section -->
-            <div class="card">
+            <section class="card" hx-get="/gpu" hx-target="#gpu-container" hx-trigger="every 1s">
                 <h2>GPU & VRAM</h2>
-                <div id="gpu-container">Loading GPUs...</div>
-            </div>
+                <article id="gpu-container">Loading GPUs...</article>
+            </section>
             <!-- Disk Section -->
-            <div class="card">
+            <section class="card" hx-get="/disk" hx-target="#disk-container" hx-trigger="every 1s">
                 <h2>Storage (Disks)</h2>
-                <div id="disk-list"></div>
-            </div>
-        </div>
+                <article id="disk-container"></article>
+            </section>
+        </main>
     </body>
 </html>
