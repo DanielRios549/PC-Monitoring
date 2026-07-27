@@ -12,12 +12,15 @@
         <script defer async src="/script.js"></script>
 
         <!-- V4 Beta 6 -->
-        <script defer async src="/htmx.js"></script>
+        <script defer async src="/libs/htmx.js"></script>
         <!-- V3.15.12 -->
-        <script defer async src="/alpine.js"></script>
+        <script defer async src="/libs/alpine.js"></script>
     </head>
-    <body x-data :class="!$store.darkMode.on && 'light'">
-        <h1>PC MONITORING</h1>
+    <body x-data :class="$store.theme.current">
+        <header>
+            <h1>PC MONITORING</h1>
+            <button x-data @click="$store.theme.toggle()">Theme</button>
+        </header>
         <main class="grid">
             <!-- CPU Section -->
             <section class="card" hx-post="/cpu" hx-target="#cpu-container" hx-trigger="every 1s">

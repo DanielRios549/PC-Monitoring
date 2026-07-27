@@ -2,7 +2,7 @@
     <div
         class="cpu-item"
         x-data="{ usage: {{$cpu.Usage}} }"
-        :style="{'--color': usage > 10 && '#451a1a'}">
+        :style="{'--color': usage > 90 ? '#451a1a' : '#334155'}">
         <p>
             <span>C{{$cpu.Core}}</span>
             <span>{{$cpu.Usage}}%</span>
@@ -21,7 +21,7 @@
             font-size: 0.7rem;
             padding: 5px;
             border-radius: 4px;
-            background-color: var(--color, #334155);
+            background-color: var(--progress, #334155);
 
             p {
                 display: flex;
