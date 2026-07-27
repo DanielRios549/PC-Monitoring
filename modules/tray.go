@@ -43,10 +43,10 @@ func (t *Tray) Show() {
 
 	go func() {
 		for msg := range helpers.ServerStatus {
+			t.action = "Start"
+
 			if msg {
 				t.action = "Stop"
-			} else {
-				t.action = "Start"
 			}
 		}
 	}()
@@ -61,7 +61,7 @@ func(t *Tray) setMenu() *systray.Menu {
 	menu := systray.NewMenu()
 
 	// TODO: t.action not changing Tray Menu Label
-    menu.Add("Start/Stop", func() {
+    menu.AddCheckbox("Web Server", true, func() {
 		switch t.action {
 			case "Stop":
 				t.action = "Start"
@@ -72,7 +72,7 @@ func(t *Tray) setMenu() *systray.Menu {
 		}
 	})
 
-	menu.Add("Open", func () {
+	menu.Add("Open Dashboard", func () {
 		err := helpers.OpenBrowser("http://localhost:9003")
 
 		if err != nil {
