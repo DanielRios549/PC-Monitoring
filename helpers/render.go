@@ -20,6 +20,10 @@ func InitTemplates() {
 	}
 
 	for _, entry := range entries {
+		if entry.IsDir() {
+			continue
+		}
+
 		file := entry.Name()
 
 		path := filepath.Join("templates", file)
