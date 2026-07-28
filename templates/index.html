@@ -9,37 +9,49 @@
 
         <link rel="icon" href="/icon.png">
         <link rel="stylesheet" href="/style.css"/>
-        <script defer async src="/script.js"></script>
+        <script defer src="/script.js"></script>
 
         <!-- V4 Beta 6 -->
-        <script defer async src="/libs/htmx.js"></script>
+        <script defer src="/libs/htmx.js"></script>
         <!-- V3.15.12 -->
-        <script defer async src="/libs/alpine.js"></script>
+        <script defer src="/libs/alpine.js"></script>
     </head>
-    <body x-data :class="$store.theme.current">
+    <body x-data="$store.theme" :class="current">
         <header>
             <h1>PC MONITORING</h1>
-            <button x-data @click="$store.theme.toggle()">Theme</button>
+            <button @click="toggle()">Theme</button>
         </header>
-        <main class="grid">
+        <main class="grid" x-data="$store.refreshes">
             <!-- CPU Section -->
-            <section class="card" hx-post="/cpu" hx-target="#cpu-container" hx-trigger="every 1s">
-                <h2>CPU Usage <span class="card-name">{{.Info.CPU.Name}}</span></h2>
+            <section class="card" hx-post="/cpu" hx-target="#cpu-container" :hx-trigger="`load, ${values.cpu}`">
+                <h2 class="card-name" x-data="{ cpu: get('cpu')}">
+                    {{.Info.CPU.Name}}
+                    <input type="text" x-model="cpu" @keyup="set('cpu', cpu)"/>
+                </h2>
                 <article id="cpu-container">Loading cores...</article>
             </section>
             <!-- RAM Section -->
-            <section class="card" hx-post="/memory" hx-target="#ram-container" hx-trigger="every 2s">
-                <h2>Memory (RAM)</h2>
+            <section class="card" hx-post="/memory" hx-target="#ram-container" :hx-trigger="`load, ${values.memory}`">
+                <h2 x-data="{ memory: get('memory') }">
+                    Memory (RAM)
+                    <input type="text" x-model="memory" @keyup="set('memory', memory)"/>
+                </h2>
                 <article id="ram-container">Loading Memory...</article>
             </section>
             <!-- GPU Section -->
-            <section class="card" hx-post="/gpu" hx-target="#gpu-container" hx-trigger="every 1s">
-                <h2>GPU & VRAM</h2>
+            <section class="card" hx-post="/gpu" hx-target="#gpu-container" :hx-trigger="`load, ${values.gpu}`">
+                <h2 x-data="{ gpu: get('gpu') }">
+                    GPU & VRAM
+                    <input type="text" x-model="gpu" @keyup="set('gpu', gpu)"/>
+                </h2>
                 <article id="gpu-container">Loading GPUs...</article>
             </section>
             <!-- Disk Section -->
-            <section class="card" hx-post="/disk" hx-target="#disk-container" hx-trigger="load">
-                <h2>Storage (Disks)</h2>
+            <section class="card" hx-post="/disk" hx-target="#disk-container" :hx-trigger="`load, ${values.disk}`">
+                <h2 x-data="{ disk: get('disk') }">
+                    Storage (Disks)
+                    <input type="text" x-model="disk" @keyup="set('disk', disk)"/>
+                </h2>
                 <article id="disk-container"></article>
             </section>
         </main>

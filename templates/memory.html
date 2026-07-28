@@ -1,7 +1,7 @@
 {{range $mem := .}}
     <div class="memory-item">
         <p class="ram-text">
-            {{$mem.Used_gb}} / {{$mem.Total_gb}} GB ({{$mem.Percent}}%)<br>
+            {{$mem.Used_gb}}GB / {{$mem.Total_gb}}GB ({{$mem.Percent}}%)<br>
         </p>
         <div class="progress-bar">
             <div class="progress-fill" style="--width: {{$mem.Percent}}%"></div>
