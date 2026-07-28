@@ -23,34 +23,34 @@
         </header>
         <main class="grid" x-data="$store.refreshes">
             <!-- CPU Section -->
-            <section class="card" hx-post="/cpu" hx-target="#cpu-container" :hx-trigger="`load, ${values.cpu}`">
+            <section class="card" hx-post="/cpu" hx-target="#cpu-container" :hx-trigger="getTrigger('cpu')">
                 <h2 class="card-name" x-data="{ cpu: get('cpu')}">
                     {{.Info.CPU.Name}}
-                    <input type="text" x-model="cpu" @keyup="set('cpu', cpu)"/>
+                    <input type="text" name="cpu" x-model="cpu" @keyup="set('cpu', cpu)"/>
                 </h2>
                 <article id="cpu-container">Loading cores...</article>
             </section>
             <!-- RAM Section -->
-            <section class="card" hx-post="/memory" hx-target="#ram-container" :hx-trigger="`load, ${values.memory}`">
+            <section class="card" hx-post="/memory" hx-target="#ram-container" :hx-trigger="getTrigger('memory')">
                 <h2 x-data="{ memory: get('memory') }">
                     Memory (RAM)
-                    <input type="text" x-model="memory" @keyup="set('memory', memory)"/>
+                    <input type="text" name="memory" x-model="memory" @keyup="set('memory', memory)"/>
                 </h2>
                 <article id="ram-container">Loading Memory...</article>
             </section>
             <!-- GPU Section -->
-            <section class="card" hx-post="/gpu" hx-target="#gpu-container" :hx-trigger="`load, ${values.gpu}`">
+            <section class="card" hx-post="/gpu" hx-target="#gpu-container" :hx-trigger="getTrigger('gpu')">
                 <h2 x-data="{ gpu: get('gpu') }">
                     GPU & VRAM
-                    <input type="text" x-model="gpu" @keyup="set('gpu', gpu)"/>
+                    <input type="text" name="gpu" x-model="gpu" @keyup="set('gpu', gpu)"/>
                 </h2>
                 <article id="gpu-container">Loading GPUs...</article>
             </section>
             <!-- Disk Section -->
-            <section class="card" hx-post="/disk" hx-target="#disk-container" :hx-trigger="`load, ${values.disk}`">
+            <section class="card" hx-post="/disk" hx-target="#disk-container" :hx-trigger="getTrigger('disk')">
                 <h2 x-data="{ disk: get('disk') }">
                     Storage (Disks)
-                    <input type="text" x-model="disk" @keyup="set('disk', disk)"/>
+                    <input type="text" name="disk" x-model="disk" @keyup="set('disk', disk)"/>
                 </h2>
                 <article id="disk-container"></article>
             </section>

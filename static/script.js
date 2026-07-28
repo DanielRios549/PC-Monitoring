@@ -39,13 +39,23 @@ document.addEventListener('alpine:init', () => {
                 return refreshes
             }
         })(),
+        getTrigger(refresh) {
+            let trigger = `load, ${this.values[refresh]}`
 
-        get(refresh) {
             if (this.values[refresh] === 'load') {
+                trigger = 'load'
+            }
+
+            return trigger
+        },
+        get(refresh) {
+            const interval = this.values[refresh]
+
+            if (interval === 'load') {
                 return 0
             }
 
-            return this.values[refresh].replace('every', '').replace('s', '').trim()
+            return interval.replace('every', '').replace('s', '').trim()
         },
         set(refresh, value) {
             let newValue = `every ${value}s`
