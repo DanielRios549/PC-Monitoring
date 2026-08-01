@@ -1,0 +1,8 @@
+{
+    "recommendations": [
+        "golang.go",
+        "atoolz.htmx-vscode-toolkit",
+        "picomet.alpinejs",
+        "ms-vscode.cpptools"
+    ]
+}
