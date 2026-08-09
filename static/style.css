@@ -1,3 +1,8 @@
+@layer pico, global, component;
+
+/* 2.1.1 Classless */
+@import url("/libs/pico.css") layer(pico);
+
 body, body.dark {
     --bg: #0f172a;
     --card-bg: #1e293b;
@@ -6,66 +11,90 @@ body, body.dark {
 }
 body.light {
     --bg: #f8fafc;
-    --card-bg: #d3d3d3;
+    --card-bg: #efefef;
     --text: #0f172a;
     --progress: #aeaeae;
 }
-body {
-    --accent: #38bdf8;
-    --danger: #ef4444;
 
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-    background-color: var(--bg); 
-    color: var(--text); 
-    margin: 0; padding: 20px; 
-}
-header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 30px;   
-}
-h1 {
-    text-align: center;
-    color: var(--accent);
-}
-h2 {
-    margin-top: 0;
-    font-size: 1.2rem;
-    color: var(--accent);
-    border-bottom: 1px solid #334155;
-    padding-bottom: 10px;
-}
-h2 > input {
-    height: 20px;
-    width: 40px;
-}
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-}
-.grid > section > h2 {
-    display: flex;
-    justify-content: space-between;
-}
-.card {
-    background: var(--card-bg);
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3);
-}
-.progress-bar {
-    position: relative;
-    background-color: var(--progress);
-    border-radius: 10px;
-    height: 20px;
-    width: 100%;
-    margin: 10px 0;
-    overflow: hidden;
-}
-.progress-fill {
-    background-color: var(--accent);
-    height: 100%;
-    width: var(--width, 100%);
+@layer global {
+    body {
+        --accent: #38bdf8;
+        --danger: #ef4444;
+
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0; padding: 20px;
+    }
+    header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+    header > button {
+        background-color: var(--accent);
+        color: var(--text);
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    h1 {
+        text-align: center;
+        color: var(--accent);
+    }
+    h2 {
+        margin-top: 0;
+        font-size: 1.2rem;
+        color: var(--accent);
+        border-bottom: 1px solid #334155;
+        padding-bottom: 10px;
+    }
+    .grid > section > h2 > input {
+        text-align: right;
+        height: 30px;
+        width: 40px;
+        padding: 5px;
+        background-color: var(--progress);
+        color: var(--text);
+        border: none
+    }
+    .grid > section > article {
+        all: unset;
+        padding: 0;
+        background-color: var(--card-bg);
+    }
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+    .grid > section > h2 {
+        display: flex;
+        justify-content: space-between;
+    }
+    .grid > section p {
+        color: var(--text);
+    }
+    .card {
+        background: var(--card-bg);
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3);
+    }
+    .progress-bar {
+        position: relative;
+        background-color: var(--progress);
+        border-radius: 10px;
+        height: 20px;
+        width: 100%;
+        margin: 10px 0;
+        overflow: hidden;
+    }
+    .progress-fill {
+        background-color: var(--accent);
+        height: 100%;
+        width: var(--width, 100%);
+    }
 }

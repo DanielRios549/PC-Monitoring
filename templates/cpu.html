@@ -11,24 +11,29 @@
 {{end}}
 
 <style>
-    #cpu-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-        gap: 5px;
+    @layer component {
+        #cpu-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 5px;
 
-        .cpu-item {
-            text-align: center;
-            font-size: 0.7rem;
-            padding: 5px;
-            border-radius: 4px;
-            background-color: var(--progress, #334155);
+            .cpu-item {
+                text-align: center;
+                font-size: 0.7rem;
+                padding: 5px;
+                border-radius: 4px;
+                background-color: var(--progress);
 
-            p {
-                display: flex;
-                flex-direction: column;
+                p {
+                    display: flex;
+                    flex-direction: column;
 
-                span {
-                    font-size: 1rem;
+                    span {
+                        font-size: 1rem;
+                    }
+                    span:last-of-type {
+                        font-size: 0.8rem;
+                    }
                 }
             }
         }
