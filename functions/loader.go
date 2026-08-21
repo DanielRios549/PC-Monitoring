@@ -8,7 +8,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-var Plan plan.FloorPlan
+var Plan plan.Floor
 
 func LoadEnv() {
 	env := os.Getenv("ENV")
