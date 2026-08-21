@@ -27,7 +27,13 @@ func V2(ip string) {
 		log.Fatalf("Connect() err: %v", err)
 	}
 
-	defer params.Conn.Close()
+	defer func() {
+		err := params.Conn.Close()
+
+		if err != nil {
+			log.Fatalf("Cannot Close Connection: %v", err)
+		}
+	}()
 
 	// Function handles for collecting metrics on query latencies.
 	// var sent time.Time

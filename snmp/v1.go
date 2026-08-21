@@ -15,7 +15,13 @@ func V1(ip string) {
 		log.Fatalf("Connect() err: %v", err)
 	}
 
-	defer g.Default.Conn.Close()
+	defer func() {
+		err := g.Default.Conn.Close()
+
+		if err != nil {
+			log.Fatalf("Cannot Close Connection: %v", err)
+		}
+	}()
 
 	oids := []string{"1.3.6.1.2.1.1.4.0", "1.3.6.1.2.1.1.7.0"}
 	result, err2 := g.Default.Get(oids) // Get() accepts up to g.MAX_OIDS
