@@ -3,21 +3,12 @@ package snmp
 import (
 	"fmt"
 	"log"
-	"os"
 
 	g "github.com/gosnmp/gosnmp"
 )
 
-func V1() {
-	// Default is a pointer to a GoSNMP struct that contains sensible defaults
-	// eg port 161, community public, etc
-	envTarget := os.Getenv("GOSNMP_TARGET")
-
-	if len(envTarget) == 0 {
-		log.Fatalf("environment variable not set: GOSNMP_TARGET")
-	}
-
-	g.Default.Target = envTarget
+func V1(ip string) {
+	g.Default.Target = ip
 	err := g.Default.Connect()
 
 	if err != nil {
