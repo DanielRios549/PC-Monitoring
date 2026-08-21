@@ -3,6 +3,7 @@
         "golang.go",
         "atoolz.htmx-vscode-toolkit",
         "picomet.alpinejs",
-        "ms-vscode.cpptools"
+        "ms-vscode.cpptools",
+        "jinliming2.vscode-go-template"
     ]
 }
