@@ -1,3 +1,4 @@
+{{define "monitors/gpu"}}
 {{range $gpu := .}}
     <div class="gpu-card">
         <p class="gpu-name">{{$gpu.Name}}</p>
@@ -24,3 +25,4 @@
         }
     }
 </style>
+{{end}}

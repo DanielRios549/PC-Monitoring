@@ -1,39 +1,43 @@
 package helpers
 
 import (
+	"embed"
 	"fmt"
 	"html/template"
+	"io/fs"
 	"net/http"
-	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
 )
 
-var templates = make(map[string]*template.Template)
+var templates *template.Template
 
-func InitTemplates() {
-	entries, err := os.ReadDir("templates")
+func InitTemplates(templatesFS embed.FS) {
+	var paths []string
+
+	err := fs.WalkDir(templatesFS, "templates", func(path string, d fs.DirEntry, err error) error {
+        if err != nil {
+			print(err.Error())
+            return err
+        }
+
+        if !d.IsDir() && filepath.Ext(path) == ".html" {
+            paths = append(paths, path)
+        }
+
+        return nil
+    })
 
 	if err != nil {
-		fmt.Printf("Template parsing error: %v", err.Error())
+		fmt.Printf("Template read error: %v", err)
 	}
 
-	for _, entry := range entries {
-		if entry.IsDir() {
-			continue
-		}
-
-		file := entry.Name()
-
-		path := filepath.Join("templates", file)
-		templates[file] = template.Must(template.ParseFiles(path))
-	}
+	templates = template.Must(template.ParseFS(templatesFS, paths...))
 }
 
 func RenderTemplate(w http.ResponseWriter, file string, data any) {
-	tmpl := templates[file]
-	err := tmpl.Execute(w, data)
+	err := templates.ExecuteTemplate(w, file, data)
 
 	if err != nil {
 		message := fmt.Sprintf("Template rendering error: %v", err.Error())

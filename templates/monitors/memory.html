@@ -1,3 +1,4 @@
+{{define "monitors/memory"}}
 {{range $mem := .}}
     <div class="memory-item">
         <p class="ram-text">
@@ -7,5 +8,6 @@
             <div class="progress-fill" style="--width: {{$mem.Percent}}%"></div>
         </div>
     </div>
+{{end}}
 {{end}}
 

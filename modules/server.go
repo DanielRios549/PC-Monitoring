@@ -2,6 +2,7 @@ package modules
 
 import (
 	"context"
+	"embed"
 	"fmt"
 	"net/http"
 	"time"
@@ -15,19 +16,21 @@ import (
 )
 
 type Server struct {
-	server  *http.Server
-	router  *chi.Mux
+	server      *http.Server
+	router      *chi.Mux
+	templatesFS embed.FS
 }
 
-func NewServer() *Server {
+func NewServer(templatesFS embed.FS) *Server {
 	router := chi.NewRouter()
 
 	instance := &Server{
 		server: nil,
 		router: router,
+		templatesFS: templatesFS,
 	}
 
-	helpers.InitTemplates()
+	helpers.InitTemplates(templatesFS)
 	instance.Routes()
 
 	return instance
@@ -62,28 +65,28 @@ func (s *Server) Routes() {
 		monitorData := monitors.CPUData()
 	
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		helpers.RenderTemplate(w, "cpu.html", monitorData)
+		helpers.RenderTemplate(w, "monitors/cpu", monitorData)
 	})
 
 	s.router.Post("/memory", func(w http.ResponseWriter, r *http.Request) {
 		monitorData := monitors.MEMData()
 	
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		helpers.RenderTemplate(w, "memory.html", monitorData)
+		helpers.RenderTemplate(w, "monitors/memory", monitorData)
 	})
 
 	s.router.Post("/disk", func(w http.ResponseWriter, r *http.Request) {
 		monitorData := monitors.Disks()
 	
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		helpers.RenderTemplate(w, "disk.html", monitorData)
+		helpers.RenderTemplate(w, "monitors/disk", monitorData)
 	})
 
 	s.router.Post("/gpu", func(w http.ResponseWriter, r *http.Request) {
 		monitorData := gpu.GPU()
 	
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		helpers.RenderTemplate(w, "gpu.html", monitorData)
+		helpers.RenderTemplate(w, "monitors/gpu", monitorData)
 	})
 }
 
