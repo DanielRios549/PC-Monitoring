@@ -1,0 +1,18 @@
+{{define "app/head"}}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{.Header.Title}}</title>
+    <meta name="description" content="{{.Header.Description}}">
+
+    <link rel="icon" href="/icon.png">
+    <link rel="stylesheet" href="/style.css"/>
+    <script defer src="/script.js"></script>
+
+    <!-- V4 Beta 6 -->
+    <script defer src="/libs/htmx.js"></script>
+    <!-- V3.15.12 -->
+    <script defer src="/libs/alpine.js"></script>
+</head>
+{{end}}
