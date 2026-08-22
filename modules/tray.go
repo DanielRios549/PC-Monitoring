@@ -73,7 +73,14 @@ func(t *Tray) setMenu() *systray.Menu {
 	})
 
 	menu.Add("Open Dashboard", func () {
-		err := helpers.OpenBrowser("http://localhost:9003")
+		host := "http://localhost:3000"
+		hostEnv := os.Getenv("HOST")
+
+		if hostEnv != "" {
+			host = hostEnv
+		}
+
+		err := helpers.OpenBrowser(host)
 
 		if err != nil {
 			fmt.Println("Error to open Web Browser: ", err)
