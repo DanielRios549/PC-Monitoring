@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+    {{template "app/head"}}
+    <body x-data="$store.theme" :class="current">
+        <header>
+            <h1>Settings</h1>
+            <h2>Work In Progress</h2>
+            <button @click="toggle()">Theme</button>
+        </header>
+        {{template "layout/nav"}}
+    </body>
+</html>

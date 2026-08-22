@@ -26,13 +26,14 @@ body.light {
         color: var(--text);
         margin: 0; padding: 20px;
     }
-    header {
+    body > header {
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         margin-bottom: 30px;
     }
-    header > button {
+    body > header > button {
         background-color: var(--accent);
         color: var(--text);
         border: none;
