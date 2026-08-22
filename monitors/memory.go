@@ -1,7 +1,7 @@
 package monitors
 
 import (
-	"github.com/shirou/gopsutil/v3/mem"
+	"github.com/shirou/gopsutil/v4/mem"
 
 	"pc-monitoring/models"
 	"pc-monitoring/helpers"
