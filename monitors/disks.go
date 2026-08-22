@@ -1,6 +1,11 @@
 package monitors
 
 import (
+	"os"
+	"path/filepath"
+	"regexp"
+	"strings"
+
 	"github.com/shirou/gopsutil/v3/disk"
 
 	"pc-monitoring/helpers"
@@ -24,6 +29,7 @@ func Disks() []*models.DiskData {
 		disks_list = append(disks_list, &models.DiskData{
 			Device:  partition.Device,
 			Mount:   partition.Mountpoint,
+			Model:   getDiskModel(partition.Device),
 			Total:   helpers.RoundTo(float64(usage.Total) / (1024 * 1024 * 1024), 2),
 			Used:    helpers.RoundTo(float64(usage.Used) / (1024 * 1024 * 1024), 2),
 			Percent: helpers.RoundTo(float64(usage.UsedPercent), 2),
@@ -32,4 +38,23 @@ func Disks() []*models.DiskData {
 
 
 	return disks_list
+}
+
+func getDiskModel(dev string) string {
+	partSuffix := regexp.MustCompile(`p?\d+$`)
+
+	base := filepath.Base(dev)
+	base = partSuffix.ReplaceAllString(base, "")
+
+	// TODO: Add Windows support too
+	modelPath := filepath.Join("/sys/block", base, "device/model")
+
+	data, err := os.ReadFile(modelPath)
+
+	if err != nil {
+		println("<<>> Err: ", err.Error())
+		return "Unknown"
+	}
+
+	return strings.TrimSpace(string(data))
 }
