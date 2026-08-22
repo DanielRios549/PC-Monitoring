@@ -61,6 +61,16 @@ func (s *Server) Routes() {
 		helpers.RenderTemplate(w, "index.html", pageInfo)
 	})
 
+	s.router.Get("/devices", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		helpers.RenderTemplate(w, "devices.html", []string{})
+	})
+
+	s.router.Get("/settings", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		helpers.RenderTemplate(w, "settings.html", []string{})
+	})
+
 	s.router.Post("/cpu", func(w http.ResponseWriter, r *http.Request) {
 		monitorData := monitors.CPUData()
 	
