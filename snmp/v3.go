@@ -63,8 +63,7 @@ func V3(ip, context, user, pass, privpass string) {
 	// rootToner  := ".2.1.43.11"
 
 	oids := []string{
-		rootOID + ".2.1.1.4.0",
-		rootOID + ".2.1.1.5.0",
+		rootOID + ".2.1.1.4.0", // Host Name
 	}
 
 	helpers.GetInfo(params, oids)

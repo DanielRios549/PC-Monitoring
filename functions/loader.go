@@ -57,16 +57,23 @@ func LoadConfig(configFile string) {
 		fmt.Printf("Room Name: %s\n", room.Name)
 
 		for _, printer := range room.Printers {
-			fmt.Printf("Printer ID: %s\n", printer.ID)
+            version := printer.Snmp.Version
+			fmt.Printf("Printer ID (V%d): %s\n", version, printer.ID)
 
-			// TODO: Get version dynamic
-			snmp.V3(
-				printer.IP,
-				printer.Snpm.Context,
-				printer.Snpm.User,
-				printer.Snpm.Pass,
-				printer.Snpm.Privpass,
-			)
+            switch version {
+                case 1:
+                    snmp.V1(printer.IP)
+                case 2:
+                    snmp.V2(printer.IP)
+                case 3:
+                    snmp.V3(
+                        printer.IP,
+                        printer.Snmp.Context,
+                        printer.Snmp.User,
+                        printer.Snmp.Pass,
+                        printer.Snmp.Privpass,
+                    )
+            }
 		}
 	}
 }
