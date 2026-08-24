@@ -2,7 +2,7 @@ package snmp
 
 import (
 	"log"
-	"pc-monitoring/functions"
+	"pc-monitoring/helpers"
 
 	"time"
 
@@ -67,6 +67,6 @@ func V3(ip, context, user, pass, privpass string) {
 		rootOID + ".2.1.1.5.0",
 	}
 
-	functions.GetInfo(params, oids)
+	helpers.GetInfo(params, oids)
 	// functions.Walk(params, rootOID + rootPages)
 }
