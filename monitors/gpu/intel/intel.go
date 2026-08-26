@@ -9,26 +9,40 @@ import "C"
 import (
 	"errors"
 	"fmt"
+	"os"
+	"path/filepath"
 	"pc-monitoring/models"
+	"strconv"
+	"strings"
 )
 
 type Monitor struct{
-	count int8
+    devices     []string
+	count       int8
+    level_zero  bool
 }
 
 func New() (*Monitor, error) {
 	instance := &Monitor{
 		count: 0,
+        level_zero: false,
 	}
 
-	init := C.zeInit(0)
+    if instance.level_zero {
+        err := instance.startLevelZero()
 
-    if init != C.ZE_RESULT_SUCCESS {
-		err := fmt.Sprintf("error to Init LevelZero Header -> Error Code: %x", init)
-        return instance, errors.New(err)
+        if err == nil {
+            return instance, nil
+        }
+    } else {
+        err := instance.startFileSys()
+
+        if err == nil {
+            return instance, nil
+        }
     }
 
-    return instance, nil
+    return nil, errors.New("Cannot Start AMD Linux. Neither FileSys or ROCm is working")
 }
 
 func (m *Monitor) CountDevices() int8 {
@@ -67,4 +81,81 @@ func (m *Monitor) Stats() ([]*models.GPUData, error) {
 	}
 
     return gpus, nil
+}
+
+func (m *Monitor) startLevelZero() error {
+    err := C.zeInit(0)
+
+    if err != C.ZE_RESULT_SUCCESS {
+		err := fmt.Sprintf("error to Init LevelZero Header -> Error Code: %x", err)
+        return err
+    }
+
+    return  err
+}
+
+func (m *Monitor) startFileSys() error {
+	paths, err := filepath.Glob(
+		"/sys/class/drm/card*/device",
+	)
+	if err != nil {
+		return err
+	}
+
+	var devices []string
+
+	for _, path := range paths {
+		vendor := m.readText(
+			filepath.Join(path, "vendor"),
+		)
+
+		if vendor == "0x8086" {
+			devices = append(devices, path)
+		}
+	}
+
+    m.devices = devices
+
+	return nil
+}
+
+func (m *Monitor) intelUtilization(path string) (float64, bool) {
+	/*
+	 * Different Intel generations expose different
+	 * sysfs/DRM files.
+	 *
+	 * Try common interfaces first.
+	 */
+
+	candidates := []string{
+		filepath.Join(path, "gpu_busy_percent"),
+		filepath.Join(path, "gt", "busy_percent"),
+	}
+
+	for _, candidate := range candidates {
+		data, err := os.ReadFile(candidate)
+		if err != nil {
+			continue
+		}
+
+		v, err := strconv.ParseFloat(
+			strings.TrimSpace(string(data)),
+			64,
+		)
+
+		if err == nil {
+			return v, true
+		}
+	}
+
+	return 0, false
+}
+
+func (m *Monitor) readText(path string) string {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return ""
+	}
+
+	return strings.TrimSpace(string(data))
 }
