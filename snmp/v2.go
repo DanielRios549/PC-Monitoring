@@ -1,37 +1,36 @@
 package snmp
 
 import (
+	"errors"
 	"fmt"
-	"log"
-	"os"
 	"time"
+	"pc-monitoring/helpers"
 
 	g "github.com/gosnmp/gosnmp"
 )
 
-func V2(ip string) {
-	// Build our own GoSNMP struct, rather than using g.Default.
-	// Do verbose logging of packets.
+func V2(ip string) error {
 	params := &g.GoSNMP{
 		Target:    ip,
 		Port:      161,
 		Community: "public",
 		Version:   g.Version2c,
 		Timeout:   time.Duration(2) * time.Second,
-		Logger:    g.NewLogger(log.New(os.Stdout, "", 0)),
+		// Logger:    g.NewLogger(log.New(os.Stdout, "", 0)),
 	}
 
 	err := params.Connect()
 
 	if err != nil {
-		log.Fatalf("Connect() err: %v", err)
+		// fmt.Printf("Connect() error: %v", err)
+        return errors.New("printer is offline")
 	}
 
 	defer func() {
 		err := params.Conn.Close()
 
 		if err != nil {
-			log.Fatalf("Cannot Close Connection: %v", err)
+			fmt.Printf("Cannot Close Connection: %v", err)
 		}
 	}()
 
@@ -45,26 +44,9 @@ func V2(ip string) {
 	// 	log.Println("Query latency in seconds:", time.Since(sent).Seconds())
 	// }
 
-	oids := []string{"1.3.6.1.2.1.1.4.0", "1.3.6.1.2.1.1.7.0"}
-	result, err2 := params.Get(oids) // Get() accepts up to g.MAX_OIDS
+	oids := []string{"1.3.6.1.2.1.1.5.0"}
 
-	if err2 != nil {
-		log.Fatalf("Get() err: %v", err2)
-	}
+	helpers.GetInfo(params, oids)
 
-	for i, variable := range result.Variables {
-		fmt.Printf("%d: oid: %s ", i, variable.Name)
-
-		// the Value of each variable returned by Get() implements
-		// interface{}. You could do a type switch...
-		switch variable.Type {
-			case g.OctetString:
-				fmt.Printf("string: %s\n", string(variable.Value.([]byte)))
-			default:
-				// ... or often you're just interested in numeric values.
-				// ToBigInt() will return the Value as a BigInt, for plugging
-				// into your calculations.
-				fmt.Printf("number: %d\n", g.ToBigInt(variable.Value))
-		}
-	}
+    return nil
 }

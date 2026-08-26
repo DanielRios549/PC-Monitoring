@@ -8,11 +8,20 @@ import (
 )
 
 func GetInfo(config *g.GoSNMP, oids []string) {
-	result, err := config.GetBulk(oids, 1, 1) // Get() accepts up to g.MAX_OIDS
+    var result *g.SnmpPacket
+    var err error
 
-	if err != nil {
-		log.Fatalf("Get() err: %v", err)
-	}
+    switch config.Version {
+        case 1:
+            result, err = g.Default.Get(oids)
+        case (2 | 3):
+            result, err = config.GetBulk(oids, 1, 1)
+    }
+
+    if err != nil {
+        log.Fatalf("Get() err: %v", err)
+        return
+    }
 
 	for i, variable := range result.Variables {
 		fmt.Printf("%d: oid: %s ", i, variable.Name)

@@ -1,16 +1,15 @@
 package snmp
 
 import (
-	"log"
-	"pc-monitoring/helpers"
-
+	"errors"
+	"fmt"
 	"time"
+	"pc-monitoring/helpers"
 
 	g "github.com/gosnmp/gosnmp"
 )
 
-func V3(ip, context, user, pass, privpass string) {
-	// build our own GoSNMP struct, rather than using g.Default
+func V3(ip, context, user, pass, privpass string) error {
 	params := &g.GoSNMP{
 		Target:        ip,
 		Port:          161,
@@ -31,14 +30,15 @@ func V3(ip, context, user, pass, privpass string) {
 	err := params.Connect()
 
 	if err != nil {
-		log.Fatalf("Connect() err: %v", err)
+		// fmt.Printf("Connect() error: %v", err)
+        return errors.New("printer is offline")
 	}
 
 	defer func() {
 		err := params.Conn.Close()
 
 		if err != nil {
-			log.Fatalf("Cannot Close Connection: %v", err)
+			fmt.Printf("Cannot Close Connection: %v", err)
 		}
 	}()
 
@@ -68,4 +68,6 @@ func V3(ip, context, user, pass, privpass string) {
 
 	helpers.GetInfo(params, oids)
 	// functions.Walk(params, rootOID + rootPages)
+
+    return nil
 }

@@ -1,48 +1,42 @@
 package snmp
 
 import (
+	"errors"
 	"fmt"
-	"log"
+	"time"
+	"pc-monitoring/helpers"
 
 	g "github.com/gosnmp/gosnmp"
 )
 
-func V1(ip string) {
-	g.Default.Target = ip
-	err := g.Default.Connect()
+func V1(ip string) error {
+	params := &g.GoSNMP{
+		Target:    ip,
+		Port:      161,
+		Community: "public",
+		Version:   g.Version1,
+		Timeout:   time.Duration(2) * time.Second,
+		// Logger:    g.NewLogger(log.New(os.Stdout, "", 0)),
+	}
+
+	err := params.Connect()
 
 	if err != nil {
-		log.Fatalf("Connect() err: %v", err)
+		// fmt.Printf("Connect() error: %v", err)
+        return errors.New("printer is offline")
 	}
 
 	defer func() {
-		err := g.Default.Conn.Close()
+		err := params.Conn.Close()
 
 		if err != nil {
-			log.Fatalf("Cannot Close Connection: %v", err)
+			fmt.Printf("Cannot Close Connection: %v", err)
 		}
 	}()
 
-	oids := []string{"1.3.6.1.2.1.1.4.0", "1.3.6.1.2.1.1.7.0"}
-	result, err2 := g.Default.Get(oids) // Get() accepts up to g.MAX_OIDS
-	if err2 != nil {
-		log.Fatalf("Get() err: %v", err2)
-	}
+	oids := []string{"1.3.6.1.2.1.1.4.0"}
+	
+    helpers.GetInfo(params, oids)
 
-	for i, variable := range result.Variables {
-		fmt.Printf("%d: oid: %s ", i, variable.Name)
-
-		// the Value of each variable returned by Get() implements
-		// interface{}. You could do a type switch...
-		switch variable.Type {
-		case g.OctetString:
-			bytes := variable.Value.([]byte)
-			fmt.Printf("string: %s\n", string(bytes))
-		default:
-			// ... or often you're just interested in numeric values.
-			// ToBigInt() will return the Value as a BigInt, for plugging
-			// into your calculations.
-			fmt.Printf("number: %d\n", g.ToBigInt(variable.Value))
-		}
-	}
+    return nil
 }
