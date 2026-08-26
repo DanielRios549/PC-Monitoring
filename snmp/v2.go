@@ -37,7 +37,8 @@ func V2(ip string) error {
     rootOID    := "1.3.6.1"
 
 	oids := []string{
-		rootOID + ".2.1.1.4.0", // Host Name
+		rootOID + ".2.1.1.4.0",        // Host Name
+        rootOID + ".2.1.25.3.2.1.3",   // Printer Model
 	}
 
 	helpers.GetInfo(params, oids)

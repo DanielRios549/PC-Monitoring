@@ -62,7 +62,8 @@ func V3(ip, context, user, pass, privpass string) error {
 	// rootToner  := ".2.1.43.11"
 
 	oids := []string{
-		rootOID + ".2.1.1.4.0", // Host Name
+		rootOID + ".2.1.1.4.0",        // Host Name
+        rootOID + ".2.1.25.3.2.1.3",   // Printer Model
 	}
 
 	helpers.GetInfo(params, oids)
