@@ -34,7 +34,12 @@ func V1(ip string) error {
 		}
 	}()
 
-	oids := []string{"1.3.6.1.2.1.1.4.0"}
+    rootOID    := "1.3.6.1"
+    
+    // V1 need to use the exact OIDs since it has no GetBulk() support
+	oids := []string{
+		rootOID + ".2.1.1.5.0", // Host Name
+	}
 	
     helpers.GetInfo(params, oids)
 

@@ -34,17 +34,11 @@ func V2(ip string) error {
 		}
 	}()
 
-	// Function handles for collecting metrics on query latencies.
-	// var sent time.Time
+    rootOID    := "1.3.6.1"
 
-	// params.OnSent = func(_ *g.GoSNMP) {
-	// 	sent = time.Now()
-	// }
-	// params.OnRecv = func(_ *g.GoSNMP) {
-	// 	log.Println("Query latency in seconds:", time.Since(sent).Seconds())
-	// }
-
-	oids := []string{"1.3.6.1.2.1.1.5.0"}
+	oids := []string{
+		rootOID + ".2.1.1.4.0", // Host Name
+	}
 
 	helpers.GetInfo(params, oids)
 
