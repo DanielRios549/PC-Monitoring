@@ -2,7 +2,6 @@ package helpers
 
 import (
 	"fmt"
-	"log"
 
 	g "github.com/gosnmp/gosnmp"
 )
@@ -12,14 +11,14 @@ func GetInfo(config *g.GoSNMP, oids []string) {
     var err error
 
     switch config.Version {
-        case 1:
-            result, err = g.Default.Get(oids)
-        case (2 | 3):
+        case 0:
+            result, err = config.Get(oids)
+        default:
             result, err = config.GetBulk(oids, 1, 1)
     }
 
     if err != nil {
-        log.Fatalf("Get() err: %v", err)
+        fmt.Printf("Get() err: %v", err)
         return
     }
 
