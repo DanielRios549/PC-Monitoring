@@ -38,8 +38,10 @@ func V1(ip string) error {
     
     // V1 need to use the exact OIDs since it has no GetBulk() support
 	oids := []string{
-		rootOID + ".2.1.1.5.0",          // Host Name
-        rootOID + ".2.1.25.3.2.1.3.1",   // Printer Model
+		rootOID + ".2.1.1.5.0",              // Host Name
+        rootOID + ".2.1.25.3.2.1.3.1",       // Printer Model
+        rootOID + ".2.1.43.11.1.1.9.1.1",    // Toner Current Level
+        rootOID + ".2.1.43.11.1.1.8.1.1",    // Toner Maximum Level
 	}
 	
     helpers.GetInfo(params, oids)
