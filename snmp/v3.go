@@ -57,18 +57,11 @@ func V3(ip, context, user, pass, privpass string) error {
 	// Toner:    1.3.6.1.2.1.43.11.1.1
 	// Paper:    1.3.6.1.2.1.43.8.2.1
 
-	rootOID    := "1.3.6.1"
+	// rootOID    := "1.3.6.1"
 	// rootPages  := ".2.1.43.8"
 	// rootToner  := ".2.1.43.11"
 
-	oids := []string{
-		rootOID + ".2.1.1.4.0",        // Host Name
-        rootOID + ".2.1.25.3.2.1.3",   // Printer Model
-        rootOID + ".2.1.43.11.1.1.9",  // Toner Current Level
-        rootOID + ".2.1.43.11.1.1.8",  // Toner Maximum Level
-	}
-
-	helpers.GetInfo(params, oids)
+	helpers.GetInfo(params, Options)
 	// functions.Walk(params, rootOID + rootPages)
 
     return nil

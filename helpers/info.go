@@ -6,9 +6,22 @@ import (
 	g "github.com/gosnmp/gosnmp"
 )
 
-func GetInfo(config *g.GoSNMP, oids []string) {
+var RootOID = "1.3.6.1"
+
+func GetInfo(config *g.GoSNMP, options map[string][]string) {
     var result *g.SnmpPacket
     var err error
+    var oids []string
+
+    for _, option := range options {
+        getOid := option[1]
+
+        if config.Version == 0 {
+            getOid = option[0]
+        }
+
+        oids = append(oids, RootOID + getOid)
+    }
 
     switch config.Version {
         case 0:

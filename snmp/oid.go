@@ -1,8 +1,9 @@
 package snmp
 
-var RootOID = "1.3.6.1"
-
-// [0] == Exact (V1) | [1] == Bulk (V2/3)
+// SNMP V1 needs the exact OIDs
+// since it has no GetBulk() support
+// Key 0 == Exact (V1)
+// Key 1 == Bulk  (V2/3)
 var Options = map[string][]string{
     "hostname": {
         ".2.1.1.5.0",
