@@ -7,24 +7,26 @@ import (
 )
 
 type Monitor struct{
-	count int8
+	devices []string
 }
 
 func New() (*Monitor, error) {
 	instance := &Monitor{
-		count: 0,
+		devices: make([]string, 0),
 	}
 
     return instance, nil
 }
 
-func (m *Monitor) CountDevices() int8 {
-	return m.count
+func (m *Monitor) CountDevices() int {
+	return len(m.devices)
 }
 
-func (m *Monitor) Close() {}
+func (m *Monitor) Close() error {
+    return nil
+}
 
-func (m *Monitor) Stats() ([]*models.GPUData, error) {
+func (m *Monitor) Refresh() ([]*models.GPUData, error) {
 	var gpus []*models.GPUData
 
     return gpus, nil

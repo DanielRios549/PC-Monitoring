@@ -31,27 +31,27 @@ type NVML struct {
 }
 
 type Monitor struct{
-	count int8
+	devices []string
 }
 
 func New() (*Monitor, error) {
 	instance := &Monitor{
-		count: 0,
+		devices: make([]string, 0),
 	}
 
     return instance, nil
 }
 
-func (m *Monitor) CountDevices() int8 {
-	return m.count
+func (m *Monitor) CountDevices() int {
+	return len(m.devices)
 }
 
-func (m *Monitor) Close() {
-    
+func (m *Monitor) Close() error {
+    return nil
 }
 
-func (m *Monitor) Stats() ([]*models.GPUData, error) {
-    // stats := make([]*models.GPUData, 0, m.count)
+func (m *Monitor) Refresh() ([]*models.GPUData, error) {
+    stats := make([]*models.GPUData, 0)
 
     var dll *windows.DLL
 	var err error
@@ -77,28 +77,29 @@ func (m *Monitor) Stats() ([]*models.GPUData, error) {
 		return nil, err
 	}
 
-	nvidia.shutdown, err = dll.FindProc("nvmlShutdown")
-	if err != nil {
-		return nil, err
-	}
+	// nvidia.shutdown, err = dll.FindProc("nvmlShutdown")
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	nvidia.deviceGetCount, err = dll.FindProc("nvmlDeviceGetCount_v2")
-	if err != nil {
-		return nil, err
-	}
+	// nvidia.deviceGetCount, err = dll.FindProc("nvmlDeviceGetCount_v2")
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	nvidia.deviceGetHandleByIdx, err = dll.FindProc("nvmlDeviceGetHandleByIndex_v2")
-	if err != nil {
-		return nil, err
-	}
+	// nvidia.deviceGetHandleByIdx, err = dll.FindProc("nvmlDeviceGetHandleByIndex_v2")
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	nvidia.deviceGetName, err = dll.FindProc("nvmlDeviceGetName")
 	if err != nil {
 		return nil, err
 	}
 
-    // TODO: Fix Typing
+    stats = append(stats, &models.GPUData{
+        Name: nvidia.deviceGetName.Name,
+    })
 
-	return nvidia, nil
-    // return stats, nil
+    return stats, nil
 }
