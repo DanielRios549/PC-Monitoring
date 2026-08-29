@@ -2,217 +2,161 @@
 
 package amd
 
-// #cgo LDFLAGS: -lamd_smi
-// #include <amd_smi/amd_smi/amdsmi.h>
-import "C"
-
-// Use this package to handles the dlopen bindings
-// under the hood so it only looks for the
-// shared library at runtime:
-// https://github.com/hhk7734/amdsmi.go
-
 import (
+	"bufio"
 	"errors"
-	"fmt"
 	"os"
 	"path/filepath"
+	"pc-monitoring/helpers"
 	"pc-monitoring/models"
 	"strconv"
 	"strings"
-	// "github.com/ROCm/rocm-systems/projects/amdsmi"
+	"time"
 )
 
 // TODO: Uptade to amdsmi package
 // For now, it's too large do download
 
 type Monitor struct{
-    handles []C.amdsmi_processor_handle_t
-    card    string
-	count   int8
-    ROCm    bool
+    devices []string
 }
 
 func New() (*Monitor, error) {
 	instance := &Monitor{
-		count: 0,
-        ROCm: false,
+		devices: helpers.FindPCIByVendor("0x1002"),
 	}
 
-    if instance.ROCm {
-        err := instance.startROCm()
+    _, err := instance.Refresh()
 
-        if err == nil {
-            return instance, nil
-        }
-    } else {
-        err := instance.startFileSys()
-
-        if err == nil {
-            return instance, nil
-        }
+    if err == nil {
+        return instance, nil
     }
 
-    return nil, errors.New("Cannot Start AMD Linux. Neither FileSys or ROCm is working")
+    return nil, errors.New("cannot Start AMD Linux. Neither FileSys or ROCm is working")
 }
 
-func (m *Monitor) CountDevices() int8 {
-	return m.count
+func (m *Monitor) CountDevices() int {
+	return len(m.devices)
 }
 
 func (m *Monitor) Close() error {
-    if m.ROCm {
-        err := C.amdsmi_shut_down()
-        
-        if err != C.AMDSMI_STATUS_SUCCESS {
-            return fmt.Errorf(
-                "amdsmi_shut_down: %d",
-                err,
-            )
-        }
-    } else {
-        println("Stop AMD Linux non-ROCm")
-    }
-
-	return nil
+    return nil
 }
 
-func (m *Monitor) Stats() ([]*models.GPUData, error) {
-	var gpus []*models.GPUData
-	var count uint8
+func (m *Monitor) Refresh() ([]*models.GPUData, error) {
+	result := make([]*models.GPUData, 0, len(m.devices))
 
-	handles := make([]C.amdsmi_processor_handle, count)
+	for _, pci := range m.devices {
+		g := readAMD(pci)
 
-	for _, handle := range handles {
-		fmt.Println(handle)
-		// var info C.amdsmi_asic_info_t
-		var activity C.amdsmi_engine_usage_t
-
-		// C.amdsmi_get_gpu_asic_info(handle, &info)
-
-		gpus = append(gpus, &models.GPUData{
-			Load: float64(C.amdsmi_get_gpu_activity(handle, &activity)),
-		})
-
-		// C.amdsmi_get_gpu_activity()
-		// C.amdsmi_get_gpu_vram_usage()
-		// C.amdsmi_get_temp_metric()
-		// C.amdsmi_get_power_info()
-	}
-
-    return gpus, nil
-}
-
-func (m *Monitor) startROCm() error {
-	err := C.amdsmi_init(0)
-
-    if err != C.AMDSMI_STATUS_SUCCESS {
-		err := fmt.Sprintf("error to Init SMI Header -> Error Code: %d", err)
-
-        return err
-    }
-
-    return err
-}
-
-func (m *Monitor) startFileSys() error {
-    entries, err := filepath.Glob(
-		"/sys/class/drm/card*/device/driver",
-	)
-
-	if err != nil {
-		return err
-	}
-
-	var result []*Monitor
-
-	for _, driverPath := range entries {
-		target, err := os.Readlink(driverPath)
-
-		if err != nil {
+		if g.Name == "" {
 			continue
 		}
 
-		if !strings.Contains(target, "amdgpu") {
-			continue
-		}
-
-		card := filepath.Dir(
-			filepath.Dir(driverPath),
-		)
-
-		result = append(result, &Monitor{
-			card: card,
-		})
+		result = append(result, g)
 	}
 
-	return nil
+	return result, nil
 }
 
-func (m *Monitor) Refresh() (models.GPUData, error) {
-	g := models.GPUData{
-		Vendor: models.AMD,
+func readAMD(pci string) *models.GPUData {
+	device := pci
+
+	g := &models.GPUData{
+		ID:        helpers.PciAddress(pci),
+		Vendor:    models.AMD,
+		Driver:    helpers.DriverForPCI(pci),
+		Timestamp: time.Now(),
+		// PCI:       helpers.PciAddress(pci),
+		// Engines:   make(map[string]float64),
 	}
 
-	name := m.readText(
-		filepath.Join(m.card, "device", "product_name"),
-	)
+	g.Name = amdName(device)
 
-	if name == "" {
-		name = m.readText(
-			filepath.Join(m.card, "device", "product"),
-		)
-	}
-
-	g.Name = name
-
-	load, ok := m.readFloat(
+	/*
+	 * amdgpu exposes gpu_busy_percent directly.
+	 */
+	g.Load = helpers.ReadFloat(
 		filepath.Join(
-			m.card,
-			"device",
+			device,
 			"gpu_busy_percent",
 		),
 	)
-    
-    if ok {
-		g.Load = load
-	}
 
-	if temp, ok := m.readTemperature(m.card); ok {
-		g.Temperature = temp
-	}
+	g.Mem_used = uint64(helpers.ReadFloat(
+		filepath.Join(
+			device,
+			"mem_busy_percent",
+		),
+	))
 
-	return g, nil
-}
-
-func (m *Monitor) readText(path string) string {
-	data, err := os.ReadFile(path)
-
-	if err != nil {
-		return ""
-	}
-
-	return strings.TrimSpace(string(data))
-}
-
-func (m *Monitor) readFloat(path string) (float64, bool) {
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return 0, false
-	}
-
-	v, err := strconv.ParseFloat(
-		strings.TrimSpace(string(data)),
-		64,
+	g.Mem_total = helpers.ReadUint(
+		filepath.Join(
+			device,
+			"mem_info_vram_total",
+		),
 	)
 
-	return v, err == nil
+	g.Mem_used = helpers.ReadUint(
+		filepath.Join(
+			device,
+			"mem_info_vram_used",
+		),
+	)
+
+	/*
+	 * Fallback to hwmon for temperature.
+	 */
+	g.Temperature = amdTemperature(device)
+
+	/*
+	 * Read clocks where exposed.
+	 */
+	g.CoreClock = amdClock(
+		filepath.Join(
+			device,
+			"pp_dpm_sclk",
+		),
+	)
+
+	g.MemoryClock = amdClock(
+		filepath.Join(
+			device,
+			"pp_dpm_mclk",
+		),
+	)
+
+	return g
 }
 
-func (m *Monitor) readTemperature(card string) (float64, bool) {
+func amdName(device string) string {
+	for _, file := range []string{
+		"product_name",
+		"product_number",
+	} {
+		value := helpers.ReadString(
+			filepath.Join(device, file),
+		)
+
+		if value != "" {
+			return value
+		}
+	}
+
+	/*
+	 * sysfs doesn't always contain a friendly name.
+	 */
+	return strings.TrimSpace(
+		helpers.ReadString(
+			filepath.Join(device, "uevent"),
+		),
+	)
+}
+
+func amdTemperature(device string) float64 {
 	matches, _ := filepath.Glob(
 		filepath.Join(
-			card,
-			"device",
+			device,
 			"hwmon",
 			"hwmon*",
 			"temp*_input",
@@ -220,11 +164,58 @@ func (m *Monitor) readTemperature(card string) (float64, bool) {
 	)
 
 	for _, path := range matches {
-		v, ok := m.readFloat(path)
-		if ok {
-			return v / 1000.0, true
+		value := helpers.ReadUint(path)
+
+		if value > 0 {
+			return float64(value) / 1000
 		}
 	}
 
-	return 0, false
+	return 0
+}
+
+func amdClock(path string) uint64 {
+	file, err := os.Open(path)
+	if err != nil {
+		return 0
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+
+	for scanner.Scan() {
+		line := scanner.Text()
+
+		if !strings.Contains(line, "*") {
+			continue
+		}
+
+		fields := strings.Fields(line)
+
+		for _, field := range fields {
+			field = strings.TrimSuffix(
+				field,
+				"*",
+			)
+
+			if strings.HasSuffix(field, "Mhz") {
+				value := strings.TrimSuffix(
+					field,
+					"Mhz",
+				)
+
+				n, err := strconv.ParseUint(
+					value,
+					10,
+					64,
+				)
+
+				if err == nil {
+					return n
+				}
+			}
+		}
+	}
+
+	return 0
 }

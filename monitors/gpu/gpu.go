@@ -22,7 +22,7 @@ func GPU() []*models.GPUData {
     }
 
 	for _, data := range monitors {
-		stats, err := data.Stats()
+		stats, err := data.Refresh()
 
 		if err != nil {
 			continue
@@ -43,10 +43,10 @@ func GPU() []*models.GPUData {
 	return gpu_list
 }
 
-func detectVendor() ([]models.GPUMonitor, int8, error)  {
+func detectVendor() ([]models.GPUMonitor, int, error)  {
 	var monitors []models.GPUMonitor
 	var monitor  models.GPUMonitor
-	var count    int8
+	var count    int
 	var err      error
 
 	// Nvidia

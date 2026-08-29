@@ -2,124 +2,64 @@
 
 package intel
 
-// #cgo LDFLAGS: -lze_loader
-// #include <level_zero/ze_api.h>
-import "C"
-
 import (
 	"errors"
-	"fmt"
 	"os"
 	"path/filepath"
+	"pc-monitoring/helpers"
 	"pc-monitoring/models"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Monitor struct{
     devices     []string
-	count       int8
-    level_zero  bool
 }
 
 func New() (*Monitor, error) {
+    var err error
+
 	instance := &Monitor{
-		count: 0,
-        level_zero: false,
+		devices: helpers.FindPCIByVendor("0x8086"),
 	}
 
-    if instance.level_zero {
-        err := instance.startLevelZero()
+    _, err = instance.Refresh()
 
-        if err == nil {
-            return instance, nil
-        }
-    } else {
-        err := instance.startFileSys()
-
-        if err == nil {
-            return instance, nil
-        }
+    if err == nil {
+        return instance, nil
     }
 
-    return nil, errors.New("Cannot Start AMD Linux. Neither FileSys or ROCm is working")
+    return nil, errors.New("cannot Start AMD on Linux. Neither FileSys or ROCm is working")
 }
 
-func (m *Monitor) CountDevices() int8 {
-	return m.count
+func (m *Monitor) CountDevices() int {
+	return len(m.devices)
 }
 
-func (m *Monitor) Close() {}
+func (m *Monitor) Close() error {
+    return nil
+}
 
-func (m *Monitor) Stats() ([]*models.GPUData, error) {
-	var gpus []*models.GPUData
-	var driverCount C.uint32_t
+func (m *Monitor) Refresh()  ([]*models.GPUData, error)  {
+	result := make([]*models.GPUData, 0, len(m.devices))
 
-	drivers := make([]C.ze_driver_handle_t, driverCount)
-	C.zeDriverGet(&driverCount, &drivers[0])
+	for _, pci := range m.devices {
+		driver := helpers.DriverForPCI(pci)
 
-	for _, driver := range drivers {
-		var deviceCount C.uint32_t
-
-		devices := make([]C.ze_device_handle_t, deviceCount)
-		C.zeDeviceGet(driver, &deviceCount, &devices[0])
-
-		for _, device := range devices {
-			var props C.ze_device_properties_t
-			props.stype = C.ZE_STRUCTURE_TYPE_DEVICE_PROPERTIES
-
-			C.zeDeviceGetProperties(device, &props)
-			
-
-			fmt.Println(C.GoString(&props.name[0]))
-
-			gpus = append(gpus, &models.GPUData{
-				Name: C.GoString(&props.name[0]),
-				// Load: float64(C.amdsmi_get_gpu_activity(handle, &activity)),
-			})
+		if driver != "i915" && driver != "xe" {
+			continue
 		}
+
+		g := readIntel(pci)
+
+		result = append(result, g)
 	}
 
-    return gpus, nil
+	return result, nil
 }
 
-func (m *Monitor) startLevelZero() error {
-    err := C.zeInit(0)
-
-    if err != C.ZE_RESULT_SUCCESS {
-		err := fmt.Sprintf("error to Init LevelZero Header -> Error Code: %x", err)
-        return err
-    }
-
-    return  err
-}
-
-func (m *Monitor) startFileSys() error {
-	paths, err := filepath.Glob(
-		"/sys/class/drm/card*/device",
-	)
-	if err != nil {
-		return err
-	}
-
-	var devices []string
-
-	for _, path := range paths {
-		vendor := m.readText(
-			filepath.Join(path, "vendor"),
-		)
-
-		if vendor == "0x8086" {
-			devices = append(devices, path)
-		}
-	}
-
-    m.devices = devices
-
-	return nil
-}
-
-func (m *Monitor) intelUtilization(path string) (float64, bool) {
+func (m *Monitor) IntelUtilization(path string) (float64, bool) {
 	/*
 	 * Different Intel generations expose different
 	 * sysfs/DRM files.
@@ -151,11 +91,170 @@ func (m *Monitor) intelUtilization(path string) (float64, bool) {
 	return 0, false
 }
 
-func (m *Monitor) readText(path string) string {
+func (m *Monitor) ReadText(path string) string {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return ""
 	}
 
 	return strings.TrimSpace(string(data))
+}
+
+func readIntel(pci string) *models.GPUData {
+	g := &models.GPUData{
+		ID:        helpers.PciAddress(pci),
+		Vendor:    models.Intel,
+		Driver:    helpers.DriverForPCI(pci),
+		// PCI:       helpers.PciAddress(pci),
+		Timestamp: time.Now(),
+		// Engines:   make(map[string]float64),
+	}
+
+	g.Name = intelName(pci)
+
+	/*
+	 * Intel shared/system GPU memory.
+	 */
+	g.Mem_total = intelMemoryTotal(pci)
+
+	/*
+	 * Temperature through hwmon if available.
+	 */
+	g.Temperature = intelTemperature(pci)
+
+	return g
+}
+
+func intelName(pci string) string {
+	/*
+	 * Prefer the PCI modalias/device information.
+	 *
+	 * A friendly marketing name is not guaranteed by sysfs.
+	 */
+	deviceID := helpers.ReadString(
+		filepath.Join(pci, "device"),
+	)
+
+	if deviceID != "" {
+		return "Intel GPU " + deviceID
+	}
+
+	return "Intel GPU"
+}
+
+func intelTemperature(device string) float64 {
+	matches, _ := filepath.Glob(
+		filepath.Join(
+			device,
+			"hwmon",
+			"hwmon*",
+			"temp*_input",
+		),
+	)
+
+	for _, path := range matches {
+		value := helpers.ReadUint(path)
+
+		if value > 0 {
+			return float64(value) / 1000
+		}
+	}
+
+	return 0
+}
+
+func intelMemoryTotal(pci string) uint64 {
+	/*
+	 * Intel integrated GPUs generally use system memory.
+	 *
+	 * i915 exposes:
+	 *   /sys/class/drm/cardX/device/mem_info_stolen_total
+	 *
+	 * xe can expose:
+	 *   /sys/class/drm/cardX/device/tileX/mem_info_vram_total
+	 *
+	 * For integrated GPUs, use the system's total RAM as the
+	 * maximum addressable GPU memory when no dedicated VRAM
+	 * information is available.
+	 */
+
+	driver := helpers.DriverForPCI(pci)
+
+	switch driver {
+	case "xe":
+		if value := helpers.ReadUint(
+			filepath.Join(
+				pci,
+				"mem_info_vram_total",
+			),
+		); value > 0 {
+			return value
+		}
+
+		// Try tile-based layout.
+		matches, _ := filepath.Glob(
+			filepath.Join(
+				pci,
+				"tile*",
+				"mem_info_vram_total",
+			),
+		)
+
+		var total uint64
+
+		for _, path := range matches {
+			total += helpers.ReadUint(path)
+		}
+
+		if total > 0 {
+			return total
+		}
+
+	case "i915":
+		/*
+		 * i915 stolen memory is not the same thing as total
+		 * GPU-accessible system memory, so don't report it
+		 * as total VRAM.
+		 */
+	}
+
+	/*
+	 * Intel integrated GPU:
+	 *
+	 * GPU memory is shared with system RAM.
+	 *
+	 * /proc/meminfo gives us total system memory.
+	 */
+	return systemMemoryTotal()
+}
+
+func systemMemoryTotal() uint64 {
+	data := helpers.ReadString("/proc/meminfo")
+
+	for _, line := range strings.Split(data, "\n") {
+		fields := strings.Fields(line)
+
+		if len(fields) < 2 {
+			continue
+		}
+
+		if fields[0] != "MemTotal:" {
+			continue
+		}
+
+		value, err := strconv.ParseUint(
+			fields[1],
+			10,
+			64,
+		)
+
+		if err != nil {
+			return 0
+		}
+
+		// /proc/meminfo reports kB.
+		return value * 1024
+	}
+
+	return 0
 }

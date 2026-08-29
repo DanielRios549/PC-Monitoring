@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 type Vendor string
 
 const (
@@ -10,9 +12,8 @@ const (
 )
 
 type GPUMonitor interface {
-	Stats() ([]*GPUData, error)
     Refresh() ([]*GPUData, error)
-	CountDevices() int8
+	CountDevices() int
 	Close() error
 	// getAdapter()
 	// getEngines()
@@ -43,5 +44,6 @@ type GPUData struct {
 	MemoryClock uint64     `json:"memory_clock"`
 	FanSpeed    float64    `json:"fan_speed"`
 	BusID       string     `json:"bus_id"`
+    Timestamp   time.Time  `json:"timestamp"`
 }
 
