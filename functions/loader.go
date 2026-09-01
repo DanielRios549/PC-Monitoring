@@ -1,12 +1,14 @@
 package functions
 
 import (
-	"log"
-	"os"
 	"encoding/json"
 	"fmt"
+	"log"
+	"os"
+	"pc-monitoring/models"
 	"pc-monitoring/models/plan"
 	"pc-monitoring/snmp"
+	"slices"
 
 	"github.com/joho/godotenv"
 )
@@ -27,7 +29,7 @@ func LoadEnv() {
 	}
 }
 
-func LoadConfig(configFile string) {
+func LoadConfig(configFile string) []*models.OidRespose {
 	file, err := os.Open(configFile)
 
 	if err != nil {
@@ -52,21 +54,27 @@ func LoadConfig(configFile string) {
 
 	fmt.Println("Successfully loaded config:")
 	fmt.Printf("Floor Name: %s\n", floor.Name)
+
+    var printers []*models.OidRespose
 	
 	for _, room := range floor.Rooms {
 		fmt.Printf("Room Name: %s\n", room.Name)
+
+        var err error
 
 		for _, printer := range room.Printers {
             version := printer.Snmp.Version
 			fmt.Printf("Printer ID (V%d): %s\n", version, printer.ID)
 
+            var info []*models.OidRespose
+
             switch version {
                 case 1:
-                    snmp.V1(printer.IP)
+                    info, err = snmp.V1(printer.IP)
                 case 2:
-                    snmp.V2(printer.IP)
+                    info, err = snmp.V2(printer.IP)
                 case 3:
-                    snmp.V3(
+                    info, err = snmp.V3(
                         printer.IP,
                         printer.Snmp.Context,
                         printer.Snmp.User,
@@ -74,6 +82,15 @@ func LoadConfig(configFile string) {
                         printer.Snmp.Privpass,
                     )
             }
+
+            // TODO: Add each printer in one Array Index
+            printers = slices.Concat(printers, info)
+
+            if err != nil {
+                log.Fatalf("Error Getting SNMP Info: %v", err)
+            }
 		}
 	}
+
+    return printers
 }

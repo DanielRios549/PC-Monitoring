@@ -3,13 +3,14 @@ package snmp
 import (
 	"errors"
 	"fmt"
-	"time"
 	"pc-monitoring/helpers"
+	"pc-monitoring/models"
+	"time"
 
 	g "github.com/gosnmp/gosnmp"
 )
 
-func V3(ip, context, user, pass, privpass string) error {
+func V3(ip, context, user, pass, privpass string) ([]*models.OidRespose, error) {
 	params := &g.GoSNMP{
 		Target:        ip,
 		Port:          161,
@@ -31,7 +32,7 @@ func V3(ip, context, user, pass, privpass string) error {
 
 	if err != nil {
 		// fmt.Printf("Connect() error: %v", err)
-        return errors.New("printer is offline")
+        return nil, errors.New("printer is offline")
 	}
 
 	defer func() {
@@ -61,8 +62,8 @@ func V3(ip, context, user, pass, privpass string) error {
 	// rootPages  := ".2.1.43.8"
 	// rootToner  := ".2.1.43.11"
 
-	helpers.GetInfo(params, Options)
+	info := helpers.GetInfo(params, Options)
 	// functions.Walk(params, rootOID + rootPages)
 
-    return nil
+    return info, nil
 }

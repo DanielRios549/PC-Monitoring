@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	"pc-monitoring/functions"
 	"pc-monitoring/helpers"
 	"pc-monitoring/models"
 	"pc-monitoring/monitors"
@@ -64,6 +65,13 @@ func (s *Server) Routes() {
 	s.router.Get("/devices", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		helpers.RenderTemplate(w, "devices.html", []string{})
+	})
+
+    s.router.Get("/printers", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+
+        printers := functions.LoadConfig("data/floor.json")
+		helpers.RenderTemplate(w, "printers.html", printers)
 	})
 
 	s.router.Get("/settings", func(w http.ResponseWriter, r *http.Request) {

@@ -11,7 +11,6 @@ var templatesFS embed.FS
 
 func main() {
 	functions.LoadEnv()
-	functions.LoadConfig("data/floor.json")
 
 	server := modules.NewServer(templatesFS)
 	tray := modules.NewTray(server)

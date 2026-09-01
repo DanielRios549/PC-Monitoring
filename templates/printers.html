@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+    {{template "app/head"}}
+    <body x-data="$store.theme" :class="current">
+        <header>
+            <h1>Printers</h1>
+            <button @click="toggle()">Theme</button>
+        </header>
+        {{template "layout/nav"}}
+        <ul>
+            {{range $printer := .}}
+                <li>
+                    <p>{{$printer}}</p>
+                </li>
+            {{end}}
+        </ul>
+    </body>
+</html>
