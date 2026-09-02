@@ -1,0 +1,17 @@
+{{define "components/printers/list"}}
+<ul>
+    {{range $info := .}}
+        <li>
+            <p>{{$info.Name}}: <span>{{$info.Value}}</span></p>
+        </li>
+    {{end}}
+</ul>
+
+<style>
+    @layer component {
+        li {
+            border-bottom: 2px solid var(--text);
+        }
+    }
+</style>
+{{end}}

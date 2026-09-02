@@ -7,12 +7,6 @@
             <button @click="toggle()">Theme</button>
         </header>
         {{template "layout/nav"}}
-        <ul>
-            {{range $printer := .}}
-                <li>
-                    <p>{{$printer}}</p>
-                </li>
-            {{end}}
-        </ul>
+        {{template "components/printers/list" .}}
     </body>
 </html>
