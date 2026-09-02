@@ -13,7 +13,7 @@ func GetInfo(config *g.GoSNMP, options map[string][]string) []*models.OidRespose
     var result *g.SnmpPacket
     var err error
 
-    items := []*models.OidRespose{}
+    var items []*models.OidRespose
 
     for key, option := range options {
         getOid := option[1]
@@ -45,20 +45,20 @@ func GetInfo(config *g.GoSNMP, options map[string][]string) []*models.OidRespose
                 switch variable.Type {
                     case g.OctetString:
                         value = string(variable.Value.([]byte))
-                	    fmt.Printf("%s: %s\n", key, value)
+                	    // fmt.Printf("%s: %s\n", key, value)
                     default:
                         // ... or often you're just interested in numeric values.
                         // ToBigInt() will return the Value as a BigInt, for plugging
                         // into your calculations.
                         currentValue := g.ToBigInt(variable.Value)
                         value = currentValue.String()
-                        fmt.Printf("%s: %d\n", key, currentValue)
+                        // fmt.Printf("%s: %d\n", key, currentValue)
                 }
             }
 
             items = append(items, &models.OidRespose{
                 Name: key,
-                Iod: getOid,
+                Oid: getOid,
                 Value: value,
             })
         }

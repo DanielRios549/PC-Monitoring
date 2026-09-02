@@ -9,6 +9,6 @@ type Response struct {
 
 type OidRespose struct {
     Name  string  `json:"name"`
-    Iod   string  `json:"oid"`
+    Oid   string  `json:"oid"`
     Value string  `json:"value"`
 }
