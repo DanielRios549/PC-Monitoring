@@ -1,8 +1,10 @@
 {{define "components/printers/list"}}
 <ul>
-    {{range $info := .}}
+    {{range $printer := .}}
         <li>
-            <p>{{$info.Name}}: <span>{{$info.Value}}</span></p>
+            {{range $info := $printer}}
+                <p>{{$info.Name}}: <span>{{$info.Value}}</span></p>
+            {{end}}
         </li>
     {{end}}
 </ul>

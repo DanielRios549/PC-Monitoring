@@ -8,7 +8,6 @@ import (
 	"pc-monitoring/models"
 	"pc-monitoring/models/plan"
 	"pc-monitoring/snmp"
-	"slices"
 
 	"github.com/joho/godotenv"
 )
@@ -29,7 +28,7 @@ func LoadEnv() {
 	}
 }
 
-func LoadConfig(configFile string) []*models.OidRespose {
+func LoadConfig(configFile string) [][]*models.OidRespose {
 	file, err := os.Open(configFile)
 
 	if err != nil {
@@ -55,7 +54,7 @@ func LoadConfig(configFile string) []*models.OidRespose {
 	fmt.Println("Successfully loaded config:")
 	fmt.Printf("Floor Name: %s\n", floor.Name)
 
-    var printers []*models.OidRespose
+    var printers [][]*models.OidRespose
 	
 	for _, room := range floor.Rooms {
 		fmt.Printf("Room Name: %s\n", room.Name)
@@ -83,8 +82,7 @@ func LoadConfig(configFile string) []*models.OidRespose {
                     )
             }
 
-            // TODO: Add each printer in one Array Index
-            printers = slices.Concat(printers, info)
+            printers = append(printers, info)
 
             if err != nil {
                 log.Fatalf("Error Getting SNMP Info: %v", err)
