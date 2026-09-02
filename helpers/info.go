@@ -2,33 +2,33 @@ package helpers
 
 import (
 	"fmt"
-	"pc-monitoring/models"
+	"pc-monitoring/models/config"
 
 	g "github.com/gosnmp/gosnmp"
 )
 
 var RootOID = "1.3.6.1"
 
-func GetInfo(config *g.GoSNMP, options map[string][]string) []*models.OidRespose {
+func GetInfo(snmp *g.GoSNMP, options map[string][]string) []*config.Oid {
     var result *g.SnmpPacket
     var err error
 
-    var items []*models.OidRespose
+    var items []*config.Oid
 
     for key, option := range options {
         getOid := option[1]
 
-        if config.Version == 0 {
+        if snmp.Version == 0 {
             getOid = option[0]
         }
 
         value := ""
 
-        switch config.Version {
+        switch snmp.Version {
             case 0:
-                result, err = config.Get([]string{RootOID + getOid})
+                result, err = snmp.Get([]string{RootOID + getOid})
             default:
-                result, err = config.GetBulk([]string{RootOID + getOid}, 1, 1)
+                result, err = snmp.GetBulk([]string{RootOID + getOid}, 1, 1)
         }
 
         if err != nil {
@@ -56,7 +56,7 @@ func GetInfo(config *g.GoSNMP, options map[string][]string) []*models.OidRespose
                 }
             }
 
-            items = append(items, &models.OidRespose{
+            items = append(items, &config.Oid{
                 Name: key,
                 Oid: getOid,
                 Value: value,

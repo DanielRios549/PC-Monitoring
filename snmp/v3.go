@@ -4,13 +4,14 @@ import (
 	"errors"
 	"fmt"
 	"pc-monitoring/helpers"
-	"pc-monitoring/models"
+	// "pc-monitoring/models"
+	"pc-monitoring/models/config"
 	"time"
 
 	g "github.com/gosnmp/gosnmp"
 )
 
-func V3(ip, context, user, pass, privpass string) ([]*models.OidRespose, error) {
+func V3(ip, context, user, pass, privpass string) ([]*config.Oid, error) {
 	params := &g.GoSNMP{
 		Target:        ip,
 		Port:          161,

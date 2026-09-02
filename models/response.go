@@ -7,8 +7,4 @@ type Response struct {
 	GPU  *GPUData  `json:"gpu"`
 }
 
-type OidRespose struct {
-    Name  string  `json:"name"`
-    Oid   string  `json:"oid"`
-    Value string  `json:"value"`
-}
+

@@ -6,10 +6,16 @@ type Printers struct {
 	Snmp      Snmp        `json:"snmp"`
 }
 
- type Snmp struct {
+type Snmp struct {
 	Version   int8        `json:"version"`
 	Context   string      `json:"context"`
 	User      string      `json:"user"`
 	Pass      string      `json:"pass"`
 	Privpass  string      `json:"privpass"`
+}
+
+type Oid struct {
+    Name      string      `json:"name"`
+    Oid       string      `json:"oid"`
+    Value     string      `json:"value"`
 }

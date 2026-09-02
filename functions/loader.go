@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"pc-monitoring/models"
+	// "pc-monitoring/models"
+	"pc-monitoring/models/config"
 	"pc-monitoring/models/plan"
 	"pc-monitoring/snmp"
 
@@ -28,7 +29,7 @@ func LoadEnv() {
 	}
 }
 
-func LoadConfig(configFile string) [][]*models.OidRespose {
+func LoadConfig(configFile string) [][]*config.Oid {
 	file, err := os.Open(configFile)
 
 	if err != nil {
@@ -54,7 +55,7 @@ func LoadConfig(configFile string) [][]*models.OidRespose {
 	fmt.Println("Successfully loaded config:")
 	fmt.Printf("Floor Name: %s\n", floor.Name)
 
-    var printers [][]*models.OidRespose
+    var printers [][]*config.Oid
 	
 	for _, room := range floor.Rooms {
 		fmt.Printf("Room Name: %s\n", room.Name)
@@ -65,7 +66,7 @@ func LoadConfig(configFile string) [][]*models.OidRespose {
             version := printer.Snmp.Version
 			fmt.Printf("Printer ID (V%d): %s\n", version, printer.ID)
 
-            var info []*models.OidRespose
+            var info []*config.Oid
 
             switch version {
                 case 1:
