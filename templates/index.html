@@ -1,45 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
     {{template "app/head"}}
-    <body x-data="$store.theme" :class="current">
-        <header>
-            <h1>PC MONITORING</h1>
-            <button @click="toggle()">Theme</button>
-        </header>
-        {{template "layout/nav"}}
-        <main class="grid" x-data="$store.refreshes">
-            <!-- CPU Section -->
-            <section class="card" hx-post="/cpu" hx-target="#cpu-container" :hx-trigger="getTrigger('cpu')">
-                <h2 class="card-name" x-data="{ cpu: get('cpu')}">
-                    {{.Info.CPU.Name}}
-                    <input type="text" name="cpu" x-model="cpu" @keyup="set('cpu', cpu)"/>
-                </h2>
-                <article id="cpu-container">Loading cores...</article>
-            </section>
-            <!-- RAM Section -->
-            <section class="card" hx-post="/memory" hx-target="#ram-container" :hx-trigger="getTrigger('memory')">
-                <h2 x-data="{ memory: get('memory') }">
-                    Memory (RAM)
-                    <input type="text" name="memory" x-model="memory" @keyup="set('memory', memory)"/>
-                </h2>
-                <article id="ram-container">Loading Memory...</article>
-            </section>
-            <!-- GPU Section -->
-            <section class="card" hx-post="/gpu" hx-target="#gpu-container" :hx-trigger="getTrigger('gpu')">
-                <h2 x-data="{ gpu: get('gpu') }">
-                    GPU & VRAM
-                    <input type="text" name="gpu" x-model="gpu" @keyup="set('gpu', gpu)"/>
-                </h2>
-                <article id="gpu-container">Loading GPUs...</article>
-            </section>
-            <!-- Disk Section -->
-            <section class="card" hx-post="/disk" hx-target="#disk-container" :hx-trigger="getTrigger('disk')">
-                <h2 x-data="{ disk: get('disk') }">
-                    Storage (Disks)
-                    <input type="text" name="disk" x-model="disk" @keyup="set('disk', disk)"/>
-                </h2>
-                <article id="disk-container"></article>
-            </section>
-        </main>
+    <body>
+        <div id="app" x-data="$store.theme" :class="current">
+            <header>
+                <h1>PC MONITORING</h1>
+                <button @click="toggle()">Theme</button>
+            </header>
+            {{template "layout/nav"}}
+            <main class="grid" x-data="$store.refreshes">
+                <!-- CPU Section -->
+                <section class="card" hx-post="/cpu" hx-target="#cpu-container" :hx-trigger="getTrigger('cpu')">
+                    <h2 class="card-name" x-data="{ cpu: get('cpu')}">
+                        {{.Info.CPU.Name}}
+                        <input type="text" name="cpu" x-model="cpu" @keyup="set('cpu', cpu)"/>
+                    </h2>
+                    <article id="cpu-container">Loading cores...</article>
+                </section>
+                <!-- RAM Section -->
+                <section class="card" hx-post="/memory" hx-target="#ram-container" :hx-trigger="getTrigger('memory')">
+                    <h2 x-data="{ memory: get('memory') }">
+                        Memory (RAM)
+                        <input type="text" name="memory" x-model="memory" @keyup="set('memory', memory)"/>
+                    </h2>
+                    <article id="ram-container">Loading Memory...</article>
+                </section>
+                <!-- GPU Section -->
+                <section class="card" hx-post="/gpu" hx-target="#gpu-container" :hx-trigger="getTrigger('gpu')">
+                    <h2 x-data="{ gpu: get('gpu') }">
+                        GPU & VRAM
+                        <input type="text" name="gpu" x-model="gpu" @keyup="set('gpu', gpu)"/>
+                    </h2>
+                    <article id="gpu-container">Loading GPUs...</article>
+                </section>
+                <!-- Disk Section -->
+                <section class="card" hx-post="/disk" hx-target="#disk-container" :hx-trigger="getTrigger('disk')">
+                    <h2 x-data="{ disk: get('disk') }">
+                        Storage (Disks)
+                        <input type="text" name="disk" x-model="disk" @keyup="set('disk', disk)"/>
+                    </h2>
+                    <article id="disk-container"></article>
+                </section>
+            </main>
+        </div>
     </body>
 </html>

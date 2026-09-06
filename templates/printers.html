@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
     {{template "app/head"}}
-    <body x-data="$store.theme" :class="current">
-        <header>
-            <h1>Printers</h1>
-            <button @click="toggle()">Theme</button>
-        </header>
-        {{template "layout/nav"}}
-        {{template "components/printers/list" .}}
+    <body>
+        <div id="app" x-data="$store.theme" :class="current">
+            <header>
+                <h1>Printers</h1>
+                <button @click="toggle()">Theme</button>
+            </header>
+            {{template "layout/nav"}}
+            {{template "components/printers/list" .}}
+        </div>
     </body>
 </html>

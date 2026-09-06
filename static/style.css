@@ -3,13 +3,13 @@
 /* 2.1.1 Classless */
 @import url("/libs/pico.css") layer(pico);
 
-body, body.dark {
+#app, #app.dark {
     --bg: #0f172a;
     --card-bg: #1e293b;
     --text: #f8fafc;
     --progress: #334155;
 }
-body.light {
+#app.light {
     --bg: #f8fafc;
     --card-bg: #efefef;
     --text: #0f172a;
@@ -17,23 +17,30 @@ body.light {
 }
 
 @layer global {
-    body {
+    #app {
         --accent: #38bdf8;
         --danger: #ef4444;
 
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         background-color: var(--bg);
         color: var(--text);
-        margin: 0; padding: 20px;
+        margin: 0;
+        padding: 20px;
+        display: grid;
+        grid-template:
+            "menu header" 60px
+            "menu main"  1fr
+            / fit-content 1fr
+        ;
     }
-    body > header {
+    #app > header {
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         margin-bottom: 30px;
     }
-    body > header > button {
+    #app > header > button {
         background-color: var(--accent);
         color: var(--text);
         border: none;
