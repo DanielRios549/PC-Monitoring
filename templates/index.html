@@ -5,10 +5,11 @@
         <div id="app" x-data="$store.theme" :class="current">
             <header>
                 <h1>PC MONITORING</h1>
-                <button @click="toggle()">Theme</button>
             </header>
-            {{template "layout/nav"}}
-            <main class="grid" x-data="$store.refreshes">
+            <aside>
+                {{template "layout/nav"}}
+            </aside>
+            <main x-data="$store.refreshes">
                 <!-- CPU Section -->
                 <section class="card" hx-post="/cpu" hx-target="#cpu-container" :hx-trigger="getTrigger('cpu')">
                     <h2 class="card-name" x-data="{ cpu: get('cpu')}">

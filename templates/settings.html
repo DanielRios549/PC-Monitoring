@@ -4,11 +4,11 @@
     <body>
         <div id="app" x-data="$store.theme" :class="current">
             <header>
-                <h1>Settings</h1>
-                <h2>Work In Progress</h2>
-                <button @click="toggle()">Theme</button>
+                <h1>Settings - Work In Progress</h1>
             </header>
-            {{template "layout/nav"}}
+            <aside>
+                {{template "layout/nav"}}
+            </aside>
         </div>
     </body>
 </html>

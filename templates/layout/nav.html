@@ -7,13 +7,27 @@
         <li><a href="/settings">Settings</a></li>
     </ul>
 </nav>
+<button @click="toggle()">Theme</button>
 
 <style>
     @layer component {
         nav {
+            max-height: 90vh;
+            margin-top: 7rem;
+
             ul {
                 display: flex;
-                flex-direction: row;
+                flex-direction: column;
+                align-items: flex-start;
+                
+                li {
+                    width: 100%;
+
+                    a {
+                        text-indent: 2rem;
+                        height: 2rem;
+                    }
+                }
             }
         }
     }
