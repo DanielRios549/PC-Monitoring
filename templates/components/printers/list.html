@@ -1,9 +1,12 @@
 {{define "components/printers/list"}}
-<ul>
+<ul class="device-list">
     {{range $printer := .}}
-        <li>
+        <li x-data='{{ $printer }}' >
             {{range $info := $printer}}
-                <p>{{$info.Name}}: <span>{{$info.Value}}</span></p>
+                {{if eq $info.Name "printer_model"}}
+                    <a :href="/printers/{$info.}">{{$info.Value}}</a>
+                    {{ break }}
+                {{end}}
             {{end}}
         </li>
     {{end}}
@@ -11,8 +14,13 @@
 
 <style>
     @layer component {
-        li {
-            border-bottom: 2px solid var(--text);
+        ul.device-list {
+            li {
+                border-bottom: 2px solid var(--text);
+            }
+            li, p {
+                color: var(--text);
+            }
         }
     }
 </style>
