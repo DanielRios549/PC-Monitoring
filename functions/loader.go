@@ -29,7 +29,7 @@ func LoadEnv() {
 	}
 }
 
-func LoadConfig(configFile string) [][]*config.Oid {
+func LoadConfig(configFile string, key string) [][]*config.Oid {
 	file, err := os.Open(configFile)
 
 	if err != nil {
@@ -55,35 +55,42 @@ func LoadConfig(configFile string) [][]*config.Oid {
 	fmt.Println("Successfully loaded config:")
 	fmt.Printf("Floor Name: %s\n", floor.Name)
 
-    var printers [][]*config.Oid
-	
+    var items [][]*config.Oid
+
 	for _, room := range floor.Rooms {
 		fmt.Printf("Room Name: %s\n", room.Name)
 
         var err error
 
-		for _, printer := range room.Printers {
-            version := printer.Snmp.Version
-			fmt.Printf("Printer ID (V%d): %s\n", version, printer.ID)
+        // By default it's a Printer
+        keyItems := room.Printers
+
+        if key == "AP" {
+            keyItems = room.APs
+        }
+
+		for _, item := range keyItems {
+            version := item.Snmp.Version
+			fmt.Printf("Item ID (V%d): %s\n", version, item.ID)
 
             var info []*config.Oid
 
             switch version {
                 case 1:
-                    info, err = snmp.V1(printer.IP)
+                    info, err = snmp.V1(item.IP)
                 case 2:
-                    info, err = snmp.V2(printer.IP)
+                    info, err = snmp.V2(item.IP)
                 case 3:
                     info, err = snmp.V3(
-                        printer.IP,
-                        printer.Snmp.Context,
-                        printer.Snmp.User,
-                        printer.Snmp.Pass,
-                        printer.Snmp.Privpass,
+                        item.IP,
+                        item.Snmp.Context,
+                        item.Snmp.User,
+                        item.Snmp.Pass,
+                        item.Snmp.Privpass,
                     )
             }
 
-            printers = append(printers, info)
+            items = append(items, info)
 
             if err != nil {
                 log.Fatalf("Error Getting SNMP Info: %v", err)
@@ -91,5 +98,5 @@ func LoadConfig(configFile string) [][]*config.Oid {
 		}
 	}
 
-    return printers
+    return items
 }

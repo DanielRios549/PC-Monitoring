@@ -15,52 +15,60 @@ func GetInfo(snmp *g.GoSNMP, options map[string][]string) []*config.Oid {
 
     var items []*config.Oid
 
-    for key, option := range options {
-        getOid := option[1]
+    // TODO: Add parameter
+    // TODO: Get simple information only to show items in a list
+    simple := false
 
-        if snmp.Version == 0 {
-            getOid = option[0]
-        }
+    if simple {
+        fmt.Println("WORK IN POGRESS")
+    } else {
+        for key, option := range options {
+            getOid := option[1]
 
-        value := ""
-
-        switch snmp.Version {
-            case 0:
-                result, err = snmp.Get([]string{RootOID + getOid})
-            default:
-                result, err = snmp.GetBulk([]string{RootOID + getOid}, 1, 1)
-        }
-
-        if err != nil {
-            fmt.Printf("Get() err: %v\n", err)
-        } else {
-            if len(result.Variables) < 1 {
-                fmt.Printf("Variables Empty: %v\n", err)
-            } else {
-                variable := result.Variables[0]
-
-                // the Value of each variable returned by Get() implements
-                // interface{}. You could do a type switch...
-
-                switch variable.Type {
-                    case g.OctetString:
-                        value = string(variable.Value.([]byte))
-                	    // fmt.Printf("%s: %s\n", key, value)
-                    default:
-                        // ... or often you're just interested in numeric values.
-                        // ToBigInt() will return the Value as a BigInt, for plugging
-                        // into your calculations.
-                        currentValue := g.ToBigInt(variable.Value)
-                        value = currentValue.String()
-                        // fmt.Printf("%s: %d\n", key, currentValue)
-                }
+            if snmp.Version == 0 {
+                getOid = option[0]
             }
 
-            items = append(items, &config.Oid{
-                Name: key,
-                Oid: getOid,
-                Value: value,
-            })
+            value := ""
+
+            switch snmp.Version {
+                case 0:
+                    result, err = snmp.Get([]string{RootOID + getOid})
+                default:
+                    result, err = snmp.GetBulk([]string{RootOID + getOid}, 1, 1)
+            }
+
+            if err != nil {
+                fmt.Printf("Get() err: %v\n", err)
+            } else {
+                if len(result.Variables) < 1 {
+                    fmt.Printf("Variables Empty: %v\n", err)
+                } else {
+                    variable := result.Variables[0]
+
+                    // the Value of each variable returned by Get() implements
+                    // interface{}. You could do a type switch...
+
+                    switch variable.Type {
+                        case g.OctetString:
+                            value = string(variable.Value.([]byte))
+                            // fmt.Printf("%s: %s\n", key, value)
+                        default:
+                            // ... or often you're just interested in numeric values.
+                            // ToBigInt() will return the Value as a BigInt, for plugging
+                            // into your calculations.
+                            currentValue := g.ToBigInt(variable.Value)
+                            value = currentValue.String()
+                            // fmt.Printf("%s: %d\n", key, currentValue)
+                    }
+                }
+
+                items = append(items, &config.Oid{
+                    Name: key,
+                    Oid: getOid,
+                    Value: value,
+                })
+            }
         }
     }
 

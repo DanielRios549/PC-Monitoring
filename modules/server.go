@@ -70,14 +70,14 @@ func (s *Server) Routes() {
     s.router.Get("/printers", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
-        printers := functions.LoadConfig("data/floor.json")
+        printers := functions.LoadConfig("data/floor.json", "printer")
 		helpers.RenderTemplate(w, "printers.html", printers)
 	})
 
     s.router.Get("/access-points", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
-        ap := functions.LoadConfig("data/floor.json")
+        ap := functions.LoadConfig("data/floor.json", "AP")
 		helpers.RenderTemplate(w, "access-points.html", ap)
 	})
 

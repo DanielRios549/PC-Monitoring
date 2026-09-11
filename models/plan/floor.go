@@ -15,6 +15,8 @@ type Room struct {
 	ID        string             `json:"id"`
 	Name      string             `json:"name"`
 	PCs       []config.PCs       `json:"pcs"`
+
+    // TODO: Make both config.Printers and config.APs match the same type
 	Printers  []config.Printers  `json:"printers"`
-	APs       []config.APs       `json:"access_points"`
+	APs       []config.Printers  `json:"access_points"` // []config.APs
 }

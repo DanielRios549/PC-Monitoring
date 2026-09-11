@@ -4,7 +4,7 @@
         <li x-data='{{ $printer }}' >
             {{range $info := $printer}}
                 {{if eq $info.Name "printer_model"}}
-                    <a :href="/printers/{$info.}">{{$info.Value}}</a>
+                    <a :href="/printers/{$info.Name}">{{$info.Value}}</a>
                     {{ break }}
                 {{end}}
             {{end}}
