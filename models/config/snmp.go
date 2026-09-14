@@ -1,6 +1,7 @@
 package config
 
-type Printers struct {
+// Printer or AP
+type SnmpDevice struct {
 	ID        string      `json:"id"`
 	IP        string      `json:"ip"`
 	Snmp      Snmp        `json:"snmp"`

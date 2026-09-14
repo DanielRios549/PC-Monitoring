@@ -12,11 +12,9 @@ type Floor struct {
 }
 
 type Room struct {
-	ID        string             `json:"id"`
-	Name      string             `json:"name"`
-	PCs       []config.PCs       `json:"pcs"`
-
-    // TODO: Make both config.Printers and config.APs match the same type
-	Printers  []config.Printers  `json:"printers"`
-	APs       []config.Printers  `json:"access_points"` // []config.APs
+	ID        string              `json:"id"`
+	Name      string              `json:"name"`
+	PCs       []config.PCs        `json:"pcs"`
+    Printers  []config.SnmpDevice `json:"printers"`
+	APs       []config.SnmpDevice `json:"access_points"`
 }
