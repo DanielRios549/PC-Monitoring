@@ -8,7 +8,19 @@ package oid
 // TODO: Separate V1 and V2/3 OIDs
 var APOptions = map[string][]string{
     "hostname": {
-        ".2.1.1.5.0",
+        "",
         ".2.1.1.4.0",
+    },
+    "ap_model": {
+        "",
+        ".4.1.26138.4.100.1.1",
+    },
+    "version": {
+        "",
+        ".4.1.26138.4.100.1.2",
+    },
+    "devices": {
+        "",
+        ".4.1.26138.4.100.2.4.1.1",
     },
 }
