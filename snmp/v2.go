@@ -6,6 +6,7 @@ import (
 	"pc-monitoring/helpers"
 	// "pc-monitoring/models"
 	"pc-monitoring/models/config"
+	"pc-monitoring/snmp/oid"
 	"time"
 
 	g "github.com/gosnmp/gosnmp"
@@ -36,7 +37,7 @@ func V2(ip string) ([]*config.Oid, error) {
 		}
 	}()
 
-	info := helpers.GetInfo(params, Options)
+	info := helpers.GetInfo(params, oid.PrinterOptions)
 
     return info, nil
 }

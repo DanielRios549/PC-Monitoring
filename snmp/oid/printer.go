@@ -1,10 +1,10 @@
-package snmp
+package oid
 
 // SNMP V1 needs the exact OIDs
 // since it has no GetBulk() support
 // Key 0 == Exact (V1)
 // Key 1 == Bulk  (V2/3)
-var Options = map[string][]string{
+var PrinterOptions = map[string][]string{
     "hostname": {
         ".2.1.1.5.0",
         ".2.1.1.4.0",

@@ -6,6 +6,7 @@ import (
 	"pc-monitoring/helpers"
 	// "pc-monitoring/models"
 	"pc-monitoring/models/config"
+	"pc-monitoring/snmp/oid"
 	"time"
 
 	g "github.com/gosnmp/gosnmp"
@@ -63,7 +64,7 @@ func V3(ip, context, user, pass, privpass string) ([]*config.Oid, error) {
 	// rootPages  := ".2.1.43.8"
 	// rootToner  := ".2.1.43.11"
 
-	info := helpers.GetInfo(params, Options)
+	info := helpers.GetInfo(params, oid.PrinterOptions)
 	// functions.Walk(params, rootOID + rootPages)
 
     return info, nil
