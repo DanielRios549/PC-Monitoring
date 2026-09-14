@@ -7,4 +7,15 @@ type Response struct {
 	GPU  *GPUData  `json:"gpu"`
 }
 
+type APResponse struct {
+    Hostname         string  `json:"hostname"`
+    Model            string  `json:"ap_model"`
+    Version          string  `json:"version"`
+    Devices          string  `json:"devices"`
+}
 
+type PrinterResponse struct {
+    Hostname         string  `json:"hostname"`
+    Model            string  `json:"printer_model"`
+    Toner_Percent    string  `json:"toner_percent"`
+}

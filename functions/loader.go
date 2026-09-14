@@ -29,7 +29,21 @@ func LoadEnv() {
 	}
 }
 
-func LoadConfig(configFile string, key string) [][]*config.Oid {
+// TODO: Update to use models.APResponse
+func LoadAPConfig(configFile string) [][]*config.Oid {
+    load := loadConfig(configFile, "AP")
+
+    return load
+}
+
+// TODO: Update to use models.PrinterResponse
+func LoadPrinterConfig(configFile string) [][]*config.Oid {
+    load := loadConfig(configFile, "printer")
+
+    return load
+}
+
+func loadConfig(configFile string, key string) [][]*config.Oid {
 	file, err := os.Open(configFile)
 
 	if err != nil {
