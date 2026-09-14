@@ -64,8 +64,9 @@ func LoadConfig(configFile string, key string) [][]*config.Oid {
 
         // By default it's a Printer
         keyItems := room.Printers
+        isAP := key == "AP"
 
-        if key == "AP" {
+        if isAP {
             keyItems = room.APs
         }
 
@@ -77,9 +78,9 @@ func LoadConfig(configFile string, key string) [][]*config.Oid {
 
             switch version {
                 case 1:
-                    info, err = snmp.V1(item.IP)
+                    info, err = snmp.V1(item.IP, isAP)
                 case 2:
-                    info, err = snmp.V2(item.IP)
+                    info, err = snmp.V2(item.IP, isAP)
                 case 3:
                     info, err = snmp.V3(
                         item.IP,
@@ -87,6 +88,7 @@ func LoadConfig(configFile string, key string) [][]*config.Oid {
                         item.Snmp.User,
                         item.Snmp.Pass,
                         item.Snmp.Privpass,
+                        isAP,
                     )
             }
 

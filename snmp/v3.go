@@ -12,7 +12,7 @@ import (
 	g "github.com/gosnmp/gosnmp"
 )
 
-func V3(ip, context, user, pass, privpass string) ([]*config.Oid, error) {
+func V3(ip, context, user, pass, privpass string, isAP bool) ([]*config.Oid, error) {
 	params := &g.GoSNMP{
 		Target:        ip,
 		Port:          161,
@@ -64,7 +64,13 @@ func V3(ip, context, user, pass, privpass string) ([]*config.Oid, error) {
 	// rootPages  := ".2.1.43.8"
 	// rootToner  := ".2.1.43.11"
 
-	info := helpers.GetInfo(params, oid.PrinterOptions)
+    oids := oid.PrinterOptions
+
+    if isAP {
+        oids = oid.APOptions
+    }
+
+	info := helpers.GetInfo(params, oids)
 	// functions.Walk(params, rootOID + rootPages)
 
     return info, nil

@@ -12,7 +12,7 @@ import (
 	g "github.com/gosnmp/gosnmp"
 )
 
-func V1(ip string) ([]*config.Oid, error) {
+func V1(ip string, isAP bool) ([]*config.Oid, error) {
 	params := &g.GoSNMP{
 		Target:    ip,
 		Port:      161,
@@ -37,7 +37,13 @@ func V1(ip string) ([]*config.Oid, error) {
 		}
 	}()
 
-    info := helpers.GetInfo(params, oid.PrinterOptions)
+    oids := oid.PrinterOptions
+
+    if isAP {
+        oids = oid.APOptions
+    }
+
+    info := helpers.GetInfo(params, oids)
 
     return info, nil
 }
