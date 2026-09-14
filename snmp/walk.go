@@ -7,9 +7,23 @@ import (
 	g "github.com/gosnmp/gosnmp"
 )
 
+func WalkCount(config *g.GoSNMP, root string) int {
+    var count int
+
+    err := config.BulkWalk(root, func(pdu g.SnmpPDU) error {
+        count++
+		return nil
+    })
+
+	if err != nil {
+		log.Fatalf("Walk err: %v", err)
+	}
+
+    return count
+}
+
 func Walk(config *g.GoSNMP, root string) {
 	err := config.BulkWalk(root, func(pdu g.SnmpPDU) error {
-		// print OID and its value type
 		fmt.Printf("%s = ", pdu.Name)
 
 		switch pdu.Type {
