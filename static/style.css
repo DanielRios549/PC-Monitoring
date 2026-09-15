@@ -52,6 +52,9 @@
         border-radius: 5px;
         cursor: pointer;
     }
+    ul li {
+        list-style: none;
+    }
     h1 {
         text-align: center;
         color: var(--accent);

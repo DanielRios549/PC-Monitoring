@@ -1,7 +1,7 @@
 {{define "components/ap/list"}}
 <ul class="ap-list">
     {{range $ap := .}}
-        <li>
+        <li class="card">
             <a href="/access-points/{{$ap.ID}}">{{$ap.Hostname}}</a>
             <span>{{$ap.Devices}} Devices</span>
         </li>
@@ -11,8 +11,13 @@
 <style>
     @layer component {
         ul.ap-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+
             li {
-                border-bottom: 2px solid var(--text);
+                height: 200px;
+                width: 250px;
             }
             li, p {
                 color: var(--text);

@@ -1,7 +1,7 @@
 {{define "components/printers/list"}}
 <ul class="printer-list">
     {{range $printer := .}}
-        <li>
+        <li class="card">
             <a href="/printers/{{$printer.ID}}">{{$printer.Hostname}}</a>
         </li>
     {{end}}
@@ -10,8 +10,13 @@
 <style>
     @layer component {
         ul.printer-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+
             li {
-                border-bottom: 2px solid var(--text);
+                height: 200px;
+                width: 250px;
             }
             li, p {
                 color: var(--text);
