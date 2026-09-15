@@ -19,7 +19,7 @@ var APOptions = map[string][]string{
         "",
         ".4.1.26138.4.100.1.2",
     },
-    "devices": {
+    "devices_count": {
         "",
         ".4.1.26138.4.100.2.4.1.1",
     },

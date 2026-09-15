@@ -3,6 +3,7 @@
     {{range $ap := .}}
         <li>
             <a href="/ap/{{$ap.Hostname}}">{{$ap.Hostname}}</a>
+            <span>{{$ap.Devices}} Devices</span>
         </li>
     {{end}}
 </ul>

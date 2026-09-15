@@ -51,7 +51,7 @@ func LoadAPConfig(configFile string) []*models.APResponse {
                     item.Model = option.Value
                 case "version":
                     item.Version = option.Value
-                case "devices":
+                case "devices_count":
                     item.Devices = option.Value
             }
         }

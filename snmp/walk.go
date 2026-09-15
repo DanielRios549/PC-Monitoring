@@ -8,7 +8,7 @@ import (
 )
 
 func WalkCount(config *g.GoSNMP, root string) int {
-    var count int
+    count := 0
 
     err := config.BulkWalk(root, func(pdu g.SnmpPDU) error {
         count++
