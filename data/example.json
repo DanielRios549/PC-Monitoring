@@ -1,0 +1,69 @@
+{
+  "id": "company",
+  "name": "Company Name",
+  "width": 1200,
+  "height": 800,
+
+  "rooms": [
+    {
+      "id": "room1",
+      "name": "Room 01",
+      "pcs": [
+        {
+          "id": "pc1",
+          "name": "PC Left",
+          "ip": "192.168.x.x"
+        },
+        {
+          "id": "pc2",
+          "name": "PC Right",
+          "ip": "192.168.x.x"
+        }
+      ],
+      "printers": [
+        {
+          "id": "printer-1",
+          "ip": "192.168.x.x",
+          "snmp": {
+            "version": 1
+          }
+        },
+        {
+          "id": "printer-2",
+          "ip": "192.168.x.x",
+          "snmp": {
+            "version": 2
+          }
+        },
+        {
+          "id": "printer-3",
+          "ip": "192.168.x.x",
+          "snmp": {
+            "version": 3,
+            "context": "ContextName",
+            "user": "user",
+            "pass": "password",
+            "privpass": "privacy_password"
+          }
+        }
+      ],
+      "access_points": [
+        {
+            "id": "ap-1",
+            "ip": "192.168.x.x",
+            "snmp": {
+                "version": 2
+            }
+        },
+        {
+            "id": "ap-2",
+            "ip": "192.168.x.x",
+            "snmp": {
+                "version": 2
+            }
+        }
+      ]
+    }
+  ]
+}
+

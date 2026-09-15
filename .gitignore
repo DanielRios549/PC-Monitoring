@@ -2,3 +2,6 @@
 !.env.example
 build
 settings.json
+data/*.json
+!data/example.json
+*.bak
