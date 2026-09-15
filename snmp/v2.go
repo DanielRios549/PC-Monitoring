@@ -3,7 +3,6 @@ package snmp
 import (
 	"errors"
 	"fmt"
-	"pc-monitoring/helpers"
 	// "pc-monitoring/models"
 	"pc-monitoring/models/config"
 	"pc-monitoring/snmp/oid"
@@ -43,7 +42,7 @@ func V2(ip string, isAP bool) ([]*config.Oid, error) {
         oids = oid.APOptions
     }
 
-	info := helpers.GetInfo(params, oids)
+	info := GetInfo(params, oids)
 
     return info, nil
 }
