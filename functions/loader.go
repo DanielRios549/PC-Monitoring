@@ -35,8 +35,9 @@ func LoadEnv() {
 func LoadAPConfig(configFile string) []*models.APResponse {
     var items []*models.APResponse
 
-    loadConfig(configFile, "AP", func(data []*config.Oid) {
+    loadConfig(configFile, "AP", func(device config.SnmpDevice, data []*config.Oid) {
         item := &models.APResponse{
+            ID: device.ID,
             Hostname: "",
             Model: "",
             Version: "",
@@ -65,8 +66,9 @@ func LoadAPConfig(configFile string) []*models.APResponse {
 func LoadPrinterConfig(configFile string) []*models.PrinterResponse {
     var items []*models.PrinterResponse
 
-    loadConfig(configFile, "printer", func(data []*config.Oid) {
+    loadConfig(configFile, "printer", func(device config.SnmpDevice, data []*config.Oid) {
         item := &models.PrinterResponse{
+            ID: device.ID,
             Hostname: "",
             Model: "",
             Toner_Percent: 0,
@@ -110,7 +112,7 @@ func LoadPrinterConfig(configFile string) []*models.PrinterResponse {
     return items
 }
 
-func loadConfig(configFile string, key string, callback func(data []*config.Oid)) {
+func loadConfig(configFile string, key string, callback func(device config.SnmpDevice, data []*config.Oid)) {
 	file, err := os.Open(configFile)
 
 	if err != nil {
@@ -142,14 +144,14 @@ func loadConfig(configFile string, key string, callback func(data []*config.Oid)
         var err error
 
         // By default it's a Printer
-        keyItems := room.Printers
+        roomItems := room.Printers
         isAP := key == "AP"
 
         if isAP {
-            keyItems = room.APs
+            roomItems = room.APs
         }
 
-		for _, item := range keyItems {
+		for _, item := range roomItems {
             version := item.Snmp.Version
 			fmt.Printf("Item ID (V%d): %s\n", version, item.ID)
 
@@ -171,7 +173,7 @@ func loadConfig(configFile string, key string, callback func(data []*config.Oid)
                     )
             }
 
-            callback(info)
+            callback(item, info)
 
             if err != nil {
                 log.Fatalf("Error Getting SNMP Info: %v", err)

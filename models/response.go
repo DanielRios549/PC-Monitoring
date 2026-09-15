@@ -8,6 +8,7 @@ type Response struct {
 }
 
 type APResponse struct {
+    ID               string  `json:"id"`
     Hostname         string  `json:"hostname"`
     Model            string  `json:"ap_model"`
     Version          string  `json:"version"`
@@ -15,6 +16,7 @@ type APResponse struct {
 }
 
 type PrinterResponse struct {
+    ID               string  `json:"id"`
     Hostname         string  `json:"hostname"`
     Model            string  `json:"printer_model"`
     Toner_Percent    float32 `json:"toner_percent"`

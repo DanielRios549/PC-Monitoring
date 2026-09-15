@@ -2,7 +2,7 @@
 <ul class="ap-list">
     {{range $ap := .}}
         <li>
-            <a href="/ap/{{$ap.Hostname}}">{{$ap.Hostname}}</a>
+            <a href="/access-points/{{$ap.ID}}">{{$ap.Hostname}}</a>
             <span>{{$ap.Devices}} Devices</span>
         </li>
     {{end}}

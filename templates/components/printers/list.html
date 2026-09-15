@@ -2,7 +2,7 @@
 <ul class="printer-list">
     {{range $printer := .}}
         <li>
-            <a href="/printers/{{$printer.Hostname}}">{{$printer.Hostname}}</a>
+            <a href="/printers/{{$printer.ID}}">{{$printer.Hostname}}</a>
         </li>
     {{end}}
 </ul>
