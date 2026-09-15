@@ -5,7 +5,10 @@ import (
 	"fmt"
 	"log"
 	"os"
+    "strconv"
+
 	// "pc-monitoring/models"
+	"pc-monitoring/models"
 	"pc-monitoring/models/config"
 	"pc-monitoring/models/plan"
 	"pc-monitoring/snmp"
@@ -29,21 +32,85 @@ func LoadEnv() {
 	}
 }
 
-// TODO: Update to use models.APResponse
-func LoadAPConfig(configFile string) [][]*config.Oid {
-    load := loadConfig(configFile, "AP")
+func LoadAPConfig(configFile string) []*models.APResponse {
+    var items []*models.APResponse
 
-    return load
+    loadConfig(configFile, "AP", func(data []*config.Oid) {
+        item := &models.APResponse{
+            Hostname: "",
+            Model: "",
+            Version: "",
+            Devices: "",
+        }
+    
+        for _, option := range data {
+            switch option.Name {
+                case "hostname":
+                    item.Hostname = option.Value
+                case "ap_model":
+                    item.Model = option.Value
+                case "version":
+                    item.Version = option.Value
+                case "devices":
+                    item.Devices = option.Value
+            }
+        }
+
+        items = append(items, item)
+    })
+
+    return items
 }
 
-// TODO: Update to use models.PrinterResponse
-func LoadPrinterConfig(configFile string) [][]*config.Oid {
-    load := loadConfig(configFile, "printer")
+func LoadPrinterConfig(configFile string) []*models.PrinterResponse {
+    var items []*models.PrinterResponse
 
-    return load
+    loadConfig(configFile, "printer", func(data []*config.Oid) {
+        item := &models.PrinterResponse{
+            Hostname: "",
+            Model: "",
+            Toner_Percent: 0,
+        }
+
+        var toner_usage int
+        var toner_max int
+    
+        for _, option := range data {
+
+            switch option.Name {
+                case "hostname":
+                    item.Hostname = option.Value
+                case "printer_model":
+                    item.Model = option.Value
+                case "toner_current":
+                    valueNum, err := strconv.Atoi(option.Value)
+
+                    if err != nil {
+                        log.Fatalf("Failed to convert Toner Current: %v", err)
+                    }
+
+                    toner_usage = valueNum
+                case "toner_max":
+                    valueNum, err := strconv.Atoi(option.Value)
+
+                    if err != nil {
+                        log.Fatalf("Failed to convert Toner Max: %v", err)
+                    }
+
+                    toner_max = valueNum
+            }
+        }
+
+        // Calculate Toner Percentage
+        item.Toner_Percent = float32((toner_max - toner_usage) * 100)
+
+        items = append(items, item)
+    })
+
+    return items
 }
 
-func loadConfig(configFile string, key string) [][]*config.Oid {
+func loadConfig(configFile string, key string, callback func(data []*config.Oid)) {
 	file, err := os.Open(configFile)
 
 	if err != nil {
@@ -68,8 +135,6 @@ func loadConfig(configFile string, key string) [][]*config.Oid {
 
 	fmt.Println("Successfully loaded config:")
 	fmt.Printf("Floor Name: %s\n", floor.Name)
-
-    var items [][]*config.Oid
 
 	for _, room := range floor.Rooms {
 		fmt.Printf("Room Name: %s\n", room.Name)
@@ -106,13 +171,11 @@ func loadConfig(configFile string, key string) [][]*config.Oid {
                     )
             }
 
-            items = append(items, info)
+            callback(info)
 
             if err != nil {
                 log.Fatalf("Error Getting SNMP Info: %v", err)
             }
 		}
 	}
-
-    return items
 }

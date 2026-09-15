@@ -17,5 +17,5 @@ type APResponse struct {
 type PrinterResponse struct {
     Hostname         string  `json:"hostname"`
     Model            string  `json:"printer_model"`
-    Toner_Percent    string  `json:"toner_percent"`
+    Toner_Percent    float32 `json:"toner_percent"`
 }

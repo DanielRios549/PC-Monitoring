@@ -1,17 +1,15 @@
 {{define "components/ap/list"}}
-<ul class="device-list">
+<ul class="ap-list">
     {{range $ap := .}}
-        <li x-data="{{ $ap }}">
-            {{range $info := $ap}}
-                <a :href="/ap/{$ap.Name}">{{$info.Value}}</a>
-            {{end}}
+        <li>
+            <a href="/ap/{{$ap.Hostname}}">{{$ap.Hostname}}</a>
         </li>
     {{end}}
 </ul>
 
 <style>
     @layer component {
-        ul.device-list {
+        ul.ap-list {
             li {
                 border-bottom: 2px solid var(--text);
             }
