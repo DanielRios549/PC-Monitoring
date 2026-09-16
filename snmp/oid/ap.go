@@ -11,7 +11,7 @@ var APOptions = map[string][]string{
         "",
         ".2.1.1.4.0",
     },
-    "vendor": {
+    "vendor_get": {
         "",
         ".2.1.1.2.0",
     },

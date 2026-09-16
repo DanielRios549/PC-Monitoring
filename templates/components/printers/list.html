@@ -3,6 +3,11 @@
     {{range $printer := .}}
         <li class="card">
             <a href="/printers/{{$printer.ID}}">{{$printer.Hostname}}</a>
+            <img
+                src="/logos/{{$printer.Vendor}}.svg"
+                alt="{{$printer.Vendor}} Logo"
+                title="{{$printer.Vendor}}"
+            />
         </li>
     {{end}}
 </ul>
@@ -15,8 +20,16 @@
             gap: 20px;
 
             li {
+                position: relative;
                 height: 200px;
                 width: 250px;
+
+                img {
+                    position: absolute;
+                    bottom: 5px;
+                    right: 5px;
+                    min-width: 30px;
+                }
             }
             li, p {
                 color: var(--text);

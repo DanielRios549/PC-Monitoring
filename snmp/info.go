@@ -9,7 +9,8 @@ import (
 	g "github.com/gosnmp/gosnmp"
 )
 
-var RootOID = "1.3.6.1"
+var RootOID    = "1.3.6.1"
+var RootVendor = "4.1"
 
 func GetInfo(snmp *g.GoSNMP, options map[string][]string) []*config.Oid {
     var result *g.SnmpPacket
@@ -36,6 +37,21 @@ func GetInfo(snmp *g.GoSNMP, options map[string][]string) []*config.Oid {
             if strings.HasSuffix(key, "_count") {
                 count := WalkCount(snmp, RootOID + getOid)
                 value = strconv.Itoa(count)
+            } else if strings.HasSuffix(key, "_get") {
+                result, err := snmp.Get([]string{RootOID + getOid})
+
+                if err != nil {
+                    fmt.Printf("Get() Vendor err: %v\n", err)
+                }
+
+                fullValue := result.Variables[0].Value.(string)
+
+                splitted := strings.SplitAfter(
+                    fullValue,
+                    fmt.Sprintf(".%s.%s.", RootOID, RootVendor),
+                )
+
+                value = strings.Split(splitted[1], ".")[0]
             } else {
                 switch snmp.Version {
                     case 0:
@@ -76,7 +92,7 @@ func GetInfo(snmp *g.GoSNMP, options map[string][]string) []*config.Oid {
                 Oid: getOid,
                 Value: value,
             })
-    }
+        }
     }
 
     return items

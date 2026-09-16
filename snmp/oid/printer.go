@@ -9,7 +9,7 @@ var PrinterOptions = map[string][]string{
         ".2.1.1.5.0",
         ".2.1.1.4.0",
     },
-    "vendor": {
+    "vendor_get": {
         ".2.1.1.2.0", // TODO: Verify if SNMPv1 version is correct
         ".2.1.1.2.0",
     },

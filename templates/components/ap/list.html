@@ -4,6 +4,11 @@
         <li class="card">
             <a href="/access-points/{{$ap.ID}}">{{$ap.Hostname}}</a>
             <span>{{$ap.Devices}} Devices</span>
+            <img
+                src="/logos/{{$ap.Vendor}}.svg"
+                alt="{{$ap.Vendor}} Logo"
+                title="{{$ap.Vendor}}"
+            />
         </li>
     {{end}}
 </ul>
@@ -16,8 +21,16 @@
             gap: 20px;
 
             li {
+                position: relative;
                 height: 200px;
                 width: 250px;
+
+                img {
+                    position: absolute;
+                    bottom: 5px;
+                    right: 5px;
+                    min-width: 30px;
+                }
             }
             li, p {
                 color: var(--text);

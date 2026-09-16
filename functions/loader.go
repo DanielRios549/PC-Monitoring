@@ -5,13 +5,14 @@ import (
 	"fmt"
 	"log"
 	"os"
-    "strconv"
+	"strconv"
+	"strings"
 
-	// "pc-monitoring/models"
 	"pc-monitoring/models"
 	"pc-monitoring/models/config"
 	"pc-monitoring/models/plan"
 	"pc-monitoring/snmp"
+	"pc-monitoring/snmp/vendors"
 
 	"github.com/joho/godotenv"
 )
@@ -39,6 +40,7 @@ func LoadAPConfig(configFile string) []*models.APResponse {
         item := &models.APResponse{
             ID: device.ID,
             Hostname: "",
+            Vendor: "N/A",
             Model: "",
             Version: "",
             Devices: "",
@@ -48,6 +50,8 @@ func LoadAPConfig(configFile string) []*models.APResponse {
             switch option.Name {
                 case "hostname":
                     item.Hostname = option.Value
+                case "vendor_get":
+                    item.Vendor = strings.ToLower(vendors.ApMap[option.Value])
                 case "ap_model":
                     item.Model = option.Value
                 case "version":
@@ -70,6 +74,7 @@ func LoadPrinterConfig(configFile string) []*models.PrinterResponse {
         item := &models.PrinterResponse{
             ID: device.ID,
             Hostname: "",
+            Vendor: "",
             Model: "",
             Toner_Percent: 0,
         }
@@ -82,6 +87,8 @@ func LoadPrinterConfig(configFile string) []*models.PrinterResponse {
             switch option.Name {
                 case "hostname":
                     item.Hostname = option.Value
+                case "vendor_get":
+                    item.Vendor = strings.ToLower(vendors.PrinterMap[option.Value])
                 case "printer_model":
                     item.Model = option.Value
                 case "toner_current":
