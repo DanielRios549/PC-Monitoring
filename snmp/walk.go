@@ -1,7 +1,6 @@
 package snmp
 
 import (
-	"fmt"
 	"log"
 
 	g "github.com/gosnmp/gosnmp"
@@ -22,15 +21,21 @@ func WalkCount(config *g.GoSNMP, root string) int {
     return count
 }
 
-func Walk(config *g.GoSNMP, root string) {
+type WalkTable map[string]string
+
+func Walk(config *g.GoSNMP, root string) WalkTable {
+    var table WalkTable
+
 	err := config.BulkWalk(root, func(pdu g.SnmpPDU) error {
-		fmt.Printf("%s = ", pdu.Name)
+		// fmt.Printf("%s = ", pdu.Name)
 
 		switch pdu.Type {
             case g.OctetString:
-                fmt.Printf("STRING: %s\n", string(pdu.Value.([]byte)))
+                // fmt.Printf("STRING: %s\n", string(pdu.Value.([]byte)))
+                table[pdu.Name] = string(pdu.Value.([]byte))
             default:
-                fmt.Printf("TYPE %d: %v\n", pdu.Type, pdu.Value)
+                // fmt.Printf("TYPE %d: %v\n", pdu.Type, pdu.Value)
+                table[pdu.Name] = g.ToBigInt(pdu.Value).String()
 		}
 		return nil // Continue walking
 	})
@@ -38,4 +43,6 @@ func Walk(config *g.GoSNMP, root string) {
 	if err != nil {
 		log.Fatalf("BulkWalk() err: %v", err)
 	}
+
+    return table
 }
