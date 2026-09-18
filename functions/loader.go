@@ -40,6 +40,7 @@ func LoadAPConfig(configFile string) []*models.APResponse {
         item := &models.APResponse{
             ID: device.ID,
             Hostname: "",
+            Mac: "",
             Vendor: "N/A",
             Model: "",
             Version: "",
@@ -50,6 +51,8 @@ func LoadAPConfig(configFile string) []*models.APResponse {
             switch option.Name {
                 case "hostname":
                     item.Hostname = option.Value
+                case "mac_next":
+                    item.Mac = option.Value
                 case "vendor_get":
                     item.Vendor = strings.ToLower(vendors.ApMap[option.Value])
                 case "ap_model":

@@ -10,6 +10,7 @@ type Response struct {
 type APResponse struct {
     ID               string  `json:"id"`
     Hostname         string  `json:"hostname"`
+    Mac              string  `json:"mac"`
     Vendor           string  `json:"vendor"`
     Model            string  `json:"ap_model"`
     Version          string  `json:"version"`

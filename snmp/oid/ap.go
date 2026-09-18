@@ -7,6 +7,10 @@ package oid
 
 // TODO: Separate V1 and V2/3 OIDs
 var APOptions = map[string][]string{
+    "mac_next": {
+        "",
+        ".2.1.2.2.1.6.1",
+    },
     "hostname": {
         "",
         ".2.1.1.4.0",

@@ -32,7 +32,7 @@ func GetInfo(snmp *g.GoSNMP, options map[string][]string) []*config.Oid {
                 getOid = option[0]
             }
 
-            value := ""
+            value := "N/A"
 
             if strings.HasSuffix(key, "_count") {
                 count := WalkCount(snmp, RootOID + getOid)
@@ -44,14 +44,29 @@ func GetInfo(snmp *g.GoSNMP, options map[string][]string) []*config.Oid {
                     fmt.Printf("Get() Vendor err: %v\n", err)
                 }
 
-                fullValue := result.Variables[0].Value.(string)
+                variable := result.Variables[0]
+
+                fullValue := variable.Value.(string)
 
                 splitted := strings.SplitAfter(
                     fullValue,
                     fmt.Sprintf(".%s.%s.", RootOID, RootVendor),
                 )
 
-                value = strings.Split(splitted[1], ".")[0]
+                if len(splitted) > 1 {
+                    value = strings.Split(splitted[1], ".")[0]
+                } else {
+                    value = splitted[0]
+                }
+            } else if strings.HasSuffix(key, "_next") {
+                result, err := snmp.GetNext([]string{RootOID + getOid})
+
+                if err != nil {
+                    fmt.Printf("GetNext() Vendor err: %v\n", err)
+                }
+
+                variable := result.Variables[0]
+                value = variable.Value.(string)
             } else {
                 switch snmp.Version {
                     case 0:

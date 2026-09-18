@@ -44,25 +44,6 @@ func V3(ip, context, user, pass, privpass string, isAP bool) ([]*config.Oid, err
 		}
 	}()
 
-	// Function handles for collecting metrics on query latencies.
-	// var sent time.Time
-
-	// params.OnSent = func(_ *g.GoSNMP) {
-	// 	sent = time.Now()
-	// }
-	// params.OnRecv = func(_ *g.GoSNMP) {
-	// 	log.Println("Query latency in seconds:", time.Since(sent).Seconds())
-	// }
-	
-	// OIDs
-	// MIB Root: 1.3.6.1.2.1.43
-	// Toner:    1.3.6.1.2.1.43.11.1.1
-	// Paper:    1.3.6.1.2.1.43.8.2.1
-
-	// rootOID    := "1.3.6.1"
-	// rootPages  := ".2.1.43.8"
-	// rootToner  := ".2.1.43.11"
-
     oids := oid.PrinterOptions
 
     if isAP {
@@ -70,7 +51,6 @@ func V3(ip, context, user, pass, privpass string, isAP bool) ([]*config.Oid, err
     }
 
 	info := GetInfo(params, oids)
-	// Walk(params, rootOID + rootPages)
 
     return info, nil
 }
