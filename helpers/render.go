@@ -1,7 +1,7 @@
 package helpers
 
 import (
-	"embed"
+	t "pc-monitoring/templates"
 	"fmt"
 	"html/template"
 	"io/fs"
@@ -13,16 +13,17 @@ import (
 
 var templates *template.Template
 
-func InitTemplates(templatesFS embed.FS) {
+func InitTemplates() {
 	var paths []string
 
-	err := fs.WalkDir(templatesFS, "templates", func(path string, d fs.DirEntry, err error) error {
+	err := fs.WalkDir(t.TemplatesFS, ".", func(path string, d fs.DirEntry, err error) error {
         if err != nil {
 			print(err.Error())
             return err
         }
 
         if !d.IsDir() && filepath.Ext(path) == ".html" {
+            println("PATH: ", path)
             paths = append(paths, path)
         }
 
@@ -33,7 +34,7 @@ func InitTemplates(templatesFS embed.FS) {
 		fmt.Printf("Template read error: %v", err)
 	}
 
-	templates = template.Must(template.ParseFS(templatesFS, paths...))
+	templates = template.Must(template.ParseFS(t.TemplatesFS, paths...))
 }
 
 func RenderTemplate(w http.ResponseWriter, file string, data any) {

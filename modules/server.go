@@ -2,7 +2,6 @@ package modules
 
 import (
 	"context"
-	"embed"
 	"fmt"
 	"net/http"
 	"time"
@@ -19,19 +18,17 @@ import (
 type Server struct {
 	server      *http.Server
 	router      *chi.Mux
-	templatesFS embed.FS
 }
 
-func NewServer(templatesFS embed.FS) *Server {
+func NewServer() *Server {
 	router := chi.NewRouter()
 
 	instance := &Server{
 		server: nil,
 		router: router,
-		templatesFS: templatesFS,
 	}
 
-	helpers.InitTemplates(templatesFS)
+	helpers.InitTemplates()
 	instance.Routes()
 
 	return instance
@@ -59,31 +56,31 @@ func (s *Server) Routes() {
 		}
 
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		helpers.RenderTemplate(w, "index.html", pageInfo)
+		helpers.RenderTemplate(w, "pages/index", pageInfo)
 	})
 
 	s.router.Get("/devices", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		helpers.RenderTemplate(w, "devices.html", []string{})
+		helpers.RenderTemplate(w, "pages/devices", []string{})
 	})
 
     s.router.Get("/printers", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
         printers := functions.LoadPrinterConfig("data/floor.json")
-		helpers.RenderTemplate(w, "printers.html", printers)
+		helpers.RenderTemplate(w, "pages/printers", printers)
 	})
 
     s.router.Get("/access-points", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
         ap := functions.LoadAPConfig("data/floor.json")
-		helpers.RenderTemplate(w, "access-points.html", ap)
+		helpers.RenderTemplate(w, "pages/access-points", ap)
 	})
 
 	s.router.Get("/settings", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		helpers.RenderTemplate(w, "settings.html", []string{})
+		helpers.RenderTemplate(w, "pages/settings", []string{})
 	})
 
 	s.router.Post("/cpu", func(w http.ResponseWriter, r *http.Request) {

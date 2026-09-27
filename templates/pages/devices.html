@@ -1,15 +1,16 @@
+{{define "pages/devices"}}
 <!DOCTYPE html>
 <html lang="en">
     {{template "app/head"}}
     <body>
         <div id="app" x-data="$store.theme" :class="current">
             <header>
-                <h1>Access Points</h1>
+                <h1>Devices - Work In Progress</h1>
             </header>
             <aside>
                 {{template "layout/nav"}}
             </aside>
-            {{template "components/ap/list" .}}
         </div>
     </body>
 </html>
+{{end}}
