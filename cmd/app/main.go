@@ -9,10 +9,12 @@ func main() {
 	functions.LoadEnv()
 
 	server := modules.NewServer()
-	tray := modules.NewTray(server)
+    agent  := modules.NewAgent()
+	tray   := modules.NewTray(server)
 
-	// Run WebServer in Parallel
+	// Run WebServer and Agent in Parallel
 	go server.Start()
+    go agent.Start()
 
 	tray.Show()
 }
