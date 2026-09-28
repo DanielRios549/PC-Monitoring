@@ -5,6 +5,7 @@
         "picomet.alpinejs",
         "ms-vscode.cpptools",
         "jinliming2.vscode-go-template",
-        "editorconfig.editorconfig"
+        "editorconfig.editorconfig",
+        "qwtel.sqlite-viewer"
     ]
 }
