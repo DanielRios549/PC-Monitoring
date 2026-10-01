@@ -9,6 +9,9 @@ func main() {
 
     err := db.AutoMigrate(
         &database.Company{},
+        &database.PC{},
+        &database.AP{},
+        &database.Printer{},
     )
 
     if err != nil {

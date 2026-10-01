@@ -14,7 +14,7 @@ type Floor struct {
 type Room struct {
 	ID        string              `json:"id"`
 	Name      string              `json:"name"`
-	PCs       []config.PCs        `json:"pcs"`
+	PCs       []config.PC         `json:"pcs"`
     Printers  []config.SnmpDevice `json:"printers"`
 	APs       []config.SnmpDevice `json:"access_points"`
 }

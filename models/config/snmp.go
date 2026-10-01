@@ -4,10 +4,12 @@ package config
 type SnmpDevice struct {
 	ID        string      `json:"id"`
 	IP        string      `json:"ip"`
-	Snmp      Snmp        `json:"snmp"`
+    SnmpConf  int8
+	Snmp      Snmp        `json:"snmp" gorm:"foreignKey:SnmpConf;references:ID"`
 }
 
 type Snmp struct {
+    ID        int8        `json:"id"`
 	Version   int8        `json:"version"`
 	Context   string      `json:"context"`
 	User      string      `json:"user"`

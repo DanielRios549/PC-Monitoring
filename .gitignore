@@ -3,5 +3,6 @@
 build
 settings.json
 data/*.json
+data/*.db
 !data/example.json
 *.bak
