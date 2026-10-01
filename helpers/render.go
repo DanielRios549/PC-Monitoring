@@ -23,7 +23,6 @@ func InitTemplates() {
         }
 
         if !d.IsDir() && filepath.Ext(path) == ".html" {
-            println("PATH: ", path)
             paths = append(paths, path)
         }
 

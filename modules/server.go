@@ -38,7 +38,12 @@ func (s *Server) Routes() {
 	fileServer := http.FileServer(http.Dir("./static"))
 	s.router.Handle("/*", fileServer)
 
-	s.router.Get("/", func(w http.ResponseWriter, r *http.Request) {
+    s.Pages()
+    s.Monitors()
+}
+
+func (s *Server) Pages() {
+    s.router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		cpu := monitors.CPUInfo()
 
 		header := models.PageData{
@@ -82,8 +87,10 @@ func (s *Server) Routes() {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		helpers.RenderTemplate(w, "pages/settings", []string{})
 	})
+}
 
-	s.router.Post("/cpu", func(w http.ResponseWriter, r *http.Request) {
+func (s *Server) Monitors() {
+    s.router.Post("/cpu", func(w http.ResponseWriter, r *http.Request) {
 		monitorData := monitors.CPUData()
 	
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
