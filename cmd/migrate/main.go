@@ -5,14 +5,7 @@ import (
 )
 
 func main() {
-    db := database.Connect()
-
-    err := db.AutoMigrate(
-        &database.Company{},
-        &database.PC{},
-        &database.AP{},
-        &database.Printer{},
-    )
+    err := database.Migrate()
 
     if err != nil {
         println("Error to Migrate: ", err)
