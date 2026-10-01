@@ -4,8 +4,7 @@ func Seed() error {
     db := Connect()
 
     infos := []Info{
-        {ID: 1, Name: "PSI"},
-        {ID: 2, Name: "Test"},
+        {ID: 1, Name: "Main"},
     }
 
     for _, info := range infos {

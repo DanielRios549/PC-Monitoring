@@ -7,6 +7,7 @@ import (
 
 func main() {
 	functions.LoadEnv()
+    functions.CheckCompanies()
 
 	server := modules.NewServer()
     agent  := modules.NewAgent()
