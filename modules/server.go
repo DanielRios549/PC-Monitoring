@@ -58,6 +58,7 @@ func (s *Server) Pages() {
 		pageInfo := map[string]any{
 			"Header": header,
 			"Info": info,
+            "Companies": functions.Filenames("data", "*", "db"),
 		}
 
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")

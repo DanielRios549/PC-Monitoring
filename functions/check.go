@@ -7,7 +7,7 @@ import (
 )
 
 func CheckCompanies() {
-    files := filenames("data", "*", "db")
+    files := Filenames("data", "*", "db")
     count := len(files)
 
     if count < 1 {
@@ -27,7 +27,7 @@ func CheckCompanies() {
     }
 }
 
-func filenames(folder, name, ext string) []string {
+func Filenames(folder, name, ext string) []string {
     matches, err := filepath.Glob(folder + "/" + name + "." + ext)
 
     if err != nil {

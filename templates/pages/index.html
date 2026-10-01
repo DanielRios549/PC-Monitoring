@@ -6,6 +6,7 @@
         <div id="app" x-data="$store.theme" :class="current">
             <header>
                 <h1>PC MONITORING</h1>
+                {{template "components/companies" .Companies}}
             </header>
             <aside>
                 {{template "layout/nav"}}
