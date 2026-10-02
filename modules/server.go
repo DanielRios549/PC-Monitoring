@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"pc-monitoring/config"
 	"pc-monitoring/functions"
 	"pc-monitoring/helpers"
 	"pc-monitoring/models"
@@ -58,7 +59,7 @@ func (s *Server) Pages() {
 		pageInfo := map[string]any{
 			"Header": header,
 			"Info": info,
-            "Companies": functions.Filenames("data", "*", "db"),
+            "Companies": functions.Filenames(config.DataFolder, "*", "db"),
 		}
 
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")

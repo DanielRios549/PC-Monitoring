@@ -3,11 +3,12 @@ package functions
 import (
 	"fmt"
 	"path/filepath"
+	"pc-monitoring/config"
 	"pc-monitoring/database"
 )
 
 func CheckCompanies() {
-    files := Filenames("data", "*", "db")
+    files := Filenames(config.DataFolder, "*", "db")
     count := len(files)
 
     if count < 1 {

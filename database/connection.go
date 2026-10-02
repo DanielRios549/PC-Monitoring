@@ -1,12 +1,18 @@
 package database
 
 import (
-  "github.com/libtnb/sqlite"
-  "gorm.io/gorm"
+	"pc-monitoring/config"
+
+	"github.com/libtnb/sqlite"
+	"gorm.io/gorm"
 )
 
 func Connect() *gorm.DB {
-    db, err := gorm.Open(sqlite.Open("data/main.db"), &gorm.Config{})
+
+    db, err := gorm.Open(
+        sqlite.Open(config.DataFolder + "/main.db"),
+        &gorm.Config{},
+    )
 
     if err != nil {
         println("failed to connect database", err)
