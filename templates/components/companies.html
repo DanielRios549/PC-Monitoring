@@ -1,13 +1,15 @@
 {{define "components/companies"}}
-<select name="comapny" id="comapny">
+<select id="companies" name="comapny" id="comapny">
     {{range $company := .}}
-        <option value="{{$company}}">{{$company}}</option>
+        <option value="{{$company.File}}">{{$company.Name}}</option>
     {{end}}
 </select>
 
 <style>
     @layer component {
-
+        select#companies {
+            width: 10rem;
+        }
     }
 </style>
 {{end}}

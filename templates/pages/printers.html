@@ -4,9 +4,7 @@
     {{template "app/head"}}
     <body>
         <div id="app" x-data="$store.theme" :class="current">
-            <header>
-                <h1>Printers</h1>
-            </header>
+            {{template "layout/header" .}}
             <aside>
                 {{template "layout/nav"}}
             </aside>

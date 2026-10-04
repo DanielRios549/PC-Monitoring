@@ -6,10 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"pc-monitoring/config"
 	"pc-monitoring/functions"
 	"pc-monitoring/helpers"
-	"pc-monitoring/models"
 	"pc-monitoring/monitors"
 	"pc-monitoring/monitors/gpu"
 
@@ -45,49 +43,50 @@ func (s *Server) Routes() {
 
 func (s *Server) Pages() {
     s.router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		cpu := monitors.CPUInfo()
-
-		header := models.PageData{
-			Title:       "PC Monitoring",
-			Description: "Real-time PC monitoring tool",
-		}
-
-		info := &models.Response{
-			CPU: cpu,
-		}
-
-		pageInfo := map[string]any{
-			"Header": header,
-			"Info": info,
-            "Companies": functions.Filenames(config.DataFolder, "*", "db"),
-		}
+        pageData := functions.PageData("PC Monitoring", "Real-time PC monitoring tool")
 
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		helpers.RenderTemplate(w, "pages/index", pageInfo)
+		helpers.RenderTemplate(w, "pages/index", pageData)
 	})
 
 	s.router.Get("/devices", func(w http.ResponseWriter, r *http.Request) {
+        pageData := functions.PageData("Devices - Work In Progress", "Show available Devices")
+    
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		helpers.RenderTemplate(w, "pages/devices", []string{})
+		helpers.RenderTemplate(w, "pages/devices", pageData)
 	})
 
     s.router.Get("/printers", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-
+        pageData := functions.PageData("Printers", "Show available Printers")
         printers := functions.LoadPrinterConfig("data/floor.json")
-		helpers.RenderTemplate(w, "pages/printers", printers)
+
+        data := map[string]any{
+            "Printers":  printers,
+            "Data":      pageData,
+        }
+
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		helpers.RenderTemplate(w, "pages/printers", data)
 	})
 
     s.router.Get("/access-points", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-
+        pageData := functions.PageData("Access Points", "Show available APs")
         ap := functions.LoadAPConfig("data/floor.json")
-		helpers.RenderTemplate(w, "pages/access-points", ap)
+
+        data := map[string]any{
+            "APs":    ap,
+            "Data":  pageData,
+        }
+
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		helpers.RenderTemplate(w, "pages/access-points", data)
 	})
 
 	s.router.Get("/settings", func(w http.ResponseWriter, r *http.Request) {
+        pageData := functions.PageData("Settings - Work In Progress", "System Settings")
+
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		helpers.RenderTemplate(w, "pages/settings", []string{})
+		helpers.RenderTemplate(w, "pages/settings", pageData)
 	})
 }
 

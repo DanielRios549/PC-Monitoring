@@ -1,0 +1,15 @@
+{{define "layout/header"}}
+<header>
+    <h1>{{.Header.Title}}</h1>
+    {{template "components/companies" .Companies}}
+</header>
+
+<style>
+    @layer comoponent {
+        header{
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+</style>
+{{end}}

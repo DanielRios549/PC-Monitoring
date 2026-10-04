@@ -1,6 +1,6 @@
 {{define "components/printers/list"}}
 <ul class="printer-list">
-    {{range $printer := .}}
+    {{range $printer := .Printers}}
         <li class="card">
             <a href="/printers/{{$printer.ID}}">{{$printer.Hostname}}</a>
             <img
