@@ -2,6 +2,7 @@ package modules
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
@@ -39,21 +40,30 @@ func (s *Server) Routes() {
 
     s.Pages()
     s.Monitors()
+    s.Setters()
 }
 
 func (s *Server) Pages() {
     s.router.Get("/", func(w http.ResponseWriter, r *http.Request) {
         pageData := functions.PageData("PC Monitoring", "Real-time PC monitoring tool")
 
+        data := map[string]any{
+            "Data": pageData,
+        }
+
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		helpers.RenderTemplate(w, "pages/index", pageData)
+		helpers.RenderTemplate(w, "pages/index", data)
 	})
 
 	s.router.Get("/devices", func(w http.ResponseWriter, r *http.Request) {
         pageData := functions.PageData("Devices - Work In Progress", "Show available Devices")
+
+        data := map[string]any{
+            "Data": pageData,
+        }
     
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		helpers.RenderTemplate(w, "pages/devices", pageData)
+		helpers.RenderTemplate(w, "pages/devices", data)
 	})
 
     s.router.Get("/printers", func(w http.ResponseWriter, r *http.Request) {
@@ -85,8 +95,12 @@ func (s *Server) Pages() {
 	s.router.Get("/settings", func(w http.ResponseWriter, r *http.Request) {
         pageData := functions.PageData("Settings - Work In Progress", "System Settings")
 
+        data := map[string]any{
+            "Data": pageData,
+        }
+
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		helpers.RenderTemplate(w, "pages/settings", pageData)
+		helpers.RenderTemplate(w, "pages/settings", data)
 	})
 }
 
@@ -118,6 +132,24 @@ func (s *Server) Monitors() {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		helpers.RenderTemplate(w, "monitors/gpu", monitorData)
 	})
+}
+
+func (s *Server) Setters() {
+    s.router.Post("/set-dbfile", func(w http.ResponseWriter, r *http.Request) {
+		var value string
+
+        err := json.NewDecoder(r.Body).Decode(&value)
+
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusBadRequest)
+            return
+        }
+    
+        defer r.Body.Close()
+
+        w.WriteHeader(http.StatusCreated)
+        json.NewEncoder(w).Encode(value)
+    })
 }
 
 func (s *Server) Start() {
