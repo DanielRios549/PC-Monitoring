@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"pc-monitoring/models"
+    "pc-monitoring/database"
 	"pc-monitoring/models/config"
 	"pc-monitoring/models/plan"
 	"pc-monitoring/snmp"
@@ -31,6 +32,21 @@ func LoadEnv() {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func LoadDevices() []*database.PC {
+    db := database.Connect()
+
+    var pcs []*database.PC
+
+    result := db.Find(&pcs)
+
+    if result.Error != nil {
+        println("Error to get Available PCs")
+        return nil
+    }
+
+    return pcs
 }
 
 func LoadAPConfig(configFile string) []*models.APResponse {

@@ -56,10 +56,12 @@ func (s *Server) Pages() {
 	})
 
 	s.router.Get("/devices", func(w http.ResponseWriter, r *http.Request) {
-        pageData := functions.PageData("Devices - Work In Progress", "Show available Devices")
+        pageData := functions.PageData("Devices", "Show available Devices")
+        listDevices := functions.LoadDevices()
 
         data := map[string]any{
             "Data": pageData,
+            "PCs" : listDevices,
         }
     
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")

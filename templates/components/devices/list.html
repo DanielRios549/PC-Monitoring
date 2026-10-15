@@ -1,5 +1,12 @@
-{{define "components/printers/list"}}
-<p>Devices List</p>
+{{define "components/devices/list"}}
+<ul class="device-list">
+    {{range $pc := .PCs}}
+        <li class="card">
+            <a href="/pc/{{$pc.ID}}">{{$pc.Name}}</a>
+            <span>{{$pc.IP}}</span>
+        </li>
+    {{end}}
+</ul>
 
 <style>
     @layer component {
