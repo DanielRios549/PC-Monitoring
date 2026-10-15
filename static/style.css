@@ -34,7 +34,7 @@
         grid-template:
             "menu header" 60px
             "menu main" calc(100dvh - 60px)
-            / max(20vw, 20rem) 1fr
+            / max(15vw, 15rem) 1fr
         ;
     }
     #app > header {
