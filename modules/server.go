@@ -9,6 +9,7 @@ import (
 
 	"pc-monitoring/functions"
 	"pc-monitoring/helpers"
+	"pc-monitoring/models"
 	"pc-monitoring/monitors"
 	"pc-monitoring/monitors/gpu"
 
@@ -49,6 +50,9 @@ func (s *Server) Pages() {
 
         data := map[string]any{
             "Data": pageData,
+            "Info": &models.Response{
+                CPU: monitors.CPUInfo(),
+            },
         }
 
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
