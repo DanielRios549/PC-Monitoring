@@ -86,7 +86,6 @@ func LoadPrinterConfig(configFile string) []*models.PrinterResponse {
         var toner_max int
     
         for _, option := range data {
-
             switch option.Name {
                 case "hostname":
                     item.Hostname = option.Value
@@ -98,7 +97,7 @@ func LoadPrinterConfig(configFile string) []*models.PrinterResponse {
                     valueNum, err := strconv.Atoi(option.Value)
 
                     if err != nil {
-                        log.Fatalf("Failed to convert Toner Current: %v", err)
+                        fmt.Printf("Failed to convert Toner Current: %v\n", err)
                     }
 
                     toner_usage = valueNum
@@ -106,7 +105,7 @@ func LoadPrinterConfig(configFile string) []*models.PrinterResponse {
                     valueNum, err := strconv.Atoi(option.Value)
 
                     if err != nil {
-                        log.Fatalf("Failed to convert Toner Max: %v", err)
+                        fmt.Printf("Failed to convert Toner Max: %v\n", err)
                     }
 
                     toner_max = valueNum

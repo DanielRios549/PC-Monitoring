@@ -42,21 +42,21 @@ func GetInfo(snmp *g.GoSNMP, options map[string][]string) []*config.Oid {
 
                 if err != nil {
                     fmt.Printf("Get() Vendor err: %v\n", err)
-                }
-
-                variable := result.Variables[0]
-
-                fullValue := variable.Value.(string)
-
-                splitted := strings.SplitAfter(
-                    fullValue,
-                    fmt.Sprintf(".%s.%s.", RootOID, RootVendor),
-                )
-
-                if len(splitted) > 1 {
-                    value = strings.Split(splitted[1], ".")[0]
                 } else {
-                    value = splitted[0]
+                    variable := result.Variables[0]
+
+                    fullValue := variable.Value.(string)
+
+                    splitted := strings.SplitAfter(
+                        fullValue,
+                        fmt.Sprintf(".%s.%s.", RootOID, RootVendor),
+                    )
+
+                    if len(splitted) > 1 {
+                        value = strings.Split(splitted[1], ".")[0]
+                    } else {
+                        value = splitted[0]
+                    }
                 }
             } else if strings.HasSuffix(key, "_next") {
                 result, err := snmp.GetNext([]string{RootOID + getOid})
